@@ -76,9 +76,20 @@ have no access to.
    name, and what a refusal looks like, quoted.
 6. **Limits.** What the feature does not cover, in plain terms.
 
-Section headings are noun phrases naming the subject: "Password logins",
-"Cloudflare tunnels", "What the server reports". Not "Getting started", not
-"Overview", not a verb phrase ordering the reader around.
+Headings name the subject and stop: "Password logins", "Cloudflare tunnels",
+"Log output", "Limits". A heading that narrates hides the noun a reader is
+scanning for, and a page of them reads as a story rather than a reference:
+
+| Narrating | Naming |
+|---|---|
+| What happens when the reader crashes | Failure behavior |
+| Verification, not assumption | Self-test |
+| Putting a login in front of the replay UI | Replay UI login |
+| Yama, where the host has it | Yama |
+| Running a fork of the reader | Custom source |
+
+Not "Getting started", not "Overview", and not a verb phrase ordering the reader
+around.
 
 ## Examples carry the document
 
@@ -127,4 +138,7 @@ inline-header bullet lists, summary sections, and the vocabulary cluster around
 - No section that only restates the section above it, and no sentence that only
   restates the sentence above it.
 - No sentence that tells the reader what to do outside a real sequence.
-- Headings scan as a table of contents someone could navigate by.
+- Every heading is a noun a reader could scan for, and the set of them reads as
+  a table of contents rather than a plot.
+- No detail split into its own file that the main page then has to summarize.
+  Two places to keep in sync is worse than one long section.
