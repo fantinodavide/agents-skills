@@ -108,6 +108,8 @@ drafting. Six rules cover most sentences:
 - One word, one meaning, reused every time. Synonym rotation is a defect here.
 - The plainest common word, and nothing that adds no meaning.
 - Structure words stay: keep the article, the subject, and `that`.
+- One fact, one sentence. A second sentence restating it, and a third drawing
+  the moral, are the commonest defect in a careful draft.
 - The consequence goes at the end of the sentence.
 - Second person for what the reader does; the system is the subject when the
   system acts.
@@ -122,6 +124,7 @@ inline-header bullet lists, summary sections, and the vocabulary cluster around
 - Every key, default, and error string checked against the source.
 - Nothing automatic presented as configurable, nothing operator-only present.
 - Every example complete, and the multi-entry shape shown where it matters.
-- No section that only restates the section above it.
+- No section that only restates the section above it, and no sentence that only
+  restates the sentence above it.
 - No sentence that tells the reader what to do outside a real sequence.
 - Headings scan as a table of contents someone could navigate by.

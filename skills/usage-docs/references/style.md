@@ -61,6 +61,28 @@ Where they disagree, the resolution is stated at the end.
   defined once on first use. Spell out an abbreviation on first use, with the
   abbreviation in parentheses after it.
 
+## Say it once
+
+The commonest defect in a careful draft is not a wrong sentence but a second
+sentence restating the first from a new angle, and a third drawing the moral.
+One fact, one sentence.
+
+> Use a deploy key with read access to that one repository. The reader can read
+> every file on the server, the key included, so a broader key exposes more than
+> the fork. An address that needs no credential avoids the question entirely.
+
+The first sentence gives the rule, the second the reason. The third repeats the
+second as advice and goes. Three tests catch this before publishing:
+
+- Cover a sentence and read on. If nothing is lost, it was scaffolding.
+- Find the sentences that open with "and", "so", "which keeps", or "which
+  means". Each is a candidate for folding into the sentence before it.
+- Count how many sentences a paragraph spends on one fact. Two is the ceiling:
+  the fact and its reason.
+
+The same applies to a clause that restates its own subject: "the two are not
+interchangeable" before explaining why is a sentence spent on suspense.
+
 ## Paragraphs, lists, and sections
 
 - One topic per paragraph, about six sentences at most.
