@@ -99,10 +99,18 @@ and why that is the safe end of the trade.
 
 ## Style
 
-Follow the Google developer documentation style guide: second person for what
-the reader does, active voice, present tense, sentence case, serial comma, code
-font for identifiers and paths, US spelling. Cut `just`, `simply`, `please`,
-`easy`, `note that`. Prefer `lets you` to `allows you to`.
+`references/style.md` carries the rule set: Strunk's composition principles, the
+Google developer documentation style guide, and ASD-STE100 merged into one, with
+the conflicts between them resolved for this kind of document. Read it before
+drafting. Six rules cover most sentences:
+
+- Active voice, simple tenses, one action per sentence.
+- One word, one meaning, reused every time. Synonym rotation is a defect here.
+- The plainest common word, and nothing that adds no meaning.
+- Structure words stay: keep the article, the subject, and `that`.
+- The consequence goes at the end of the sentence.
+- Second person for what the reader does; the system is the subject when the
+  system acts.
 
 Read `references/anti-patterns.md` before finishing. It lists the tells that
 make documentation read as generated: adjective padding, the rule of three,

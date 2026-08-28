@@ -4,7 +4,7 @@ Skills for Claude Code, kept outside the projects that use them.
 
 | Skill | What it covers |
 |---|---|
-| [`usage-docs`](skills/usage-docs/SKILL.md) | Usage documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, and the checks that keep claims true. |
+| [`usage-docs`](skills/usage-docs/SKILL.md) | Usage documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, the checks that keep claims true, and one merged style rule set from Strunk, the Google developer documentation style guide, and ASD-STE100. |
 
 ## Install
 
