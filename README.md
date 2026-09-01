@@ -23,8 +23,8 @@ An install tracks the repo, so a `/plugin update` brings later changes.
 
 ## Install as loose skills
 
-Claude Code also loads skills from `~/.claude/skills`. A symlink keeps this repo
-the single source, and suits work on the skills themselves:
+Claude Code also loads skills from `~/.claude/skills`, which suits work on the
+skills themselves. A symlink keeps this repo the single source:
 
 ```bash
 ln -s "$PWD/skills/technical-docs" ~/.claude/skills/technical-docs
@@ -41,19 +41,18 @@ Copying the directory works too, at the cost of drift.
 ## Output styles
 
 An output style and a skill are the same file: markdown with `name` and
-`description` in the frontmatter. `clear-output-style` is written to serve as
-both, so a second symlink turns the skill into a style `/output-style` lists:
+`description` in the frontmatter. `clear-output-style` serves as both, and the
+plugin ships it both ways.
+
+As a style it governs every reply in the session, selected with `/output-style`.
+As a skill it loads on demand, in this session or in a subagent that writes
+something a person reads.
+
+Outside a plugin install, a symlink does the same:
 
 ```bash
 ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-output-style.md
 ```
-
-```powershell
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\output-styles\clear-output-style.md" -Target "$PWD\skills\clear-output-style\SKILL.md"
-```
-
-As a style it governs every reply in the session. As a skill it loads on demand,
-in this session or in a subagent that writes something a person reads.
 
 ## Layout
 
@@ -70,8 +69,9 @@ skills/<name>/
     references/*.md
 ```
 
-A plugin install carries the skills and not the output style, which Claude Code
-reads from `~/.claude/output-styles`. The symlink above stays the way to get it.
+The plugin ships the output style as well, through the `outputStyles` path in
+`plugin.json`, which points at the `clear-output-style` skill directory rather
+than a second copy of the same text. `/output-style` lists it after an install.
 
 ## Credits
 
