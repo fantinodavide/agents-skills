@@ -28,8 +28,7 @@ Copying the directory works too, at the cost of drift.
 
 An output style and a skill are the same file: markdown with `name` and
 `description` in the frontmatter. `clear-output-style` is written to serve as
-both, so
-a second symlink turns the skill into a style `/output-style` lists:
+both, so a second symlink turns the skill into a style `/output-style` lists:
 
 ```bash
 ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-output-style.md
