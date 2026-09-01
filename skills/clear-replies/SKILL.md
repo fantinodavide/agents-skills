@@ -1,31 +1,31 @@
 ---
 name: clear-replies
-description: Speak to a person in plain, checkable language — the answer first, one fact per sentence, literal terms, short vertical lists, no preamble and no recap. Use for chat replies, progress reports, plans, review notes, and any other message a person reads. Triggers include "answer plainly", "cut the fluff", "clear reply". Not for code, and not for usage documentation, which has its own skill.
+description: Speak to a person in plain, checkable language — the answer first, one fact per sentence, literal terms, short vertical lists, no preamble and no recap. Use for chat replies, progress reports, plans, review notes, and any other message a person reads. Triggers include "answer plainly", "cut the fluff", "clear reply". Not for code, and not for technical documentation, which has its own skill.
 ---
 
 # Clear replies
 
 A reply is read by someone who asked a question and wants to act on the answer.
-This skill sets the voice: the rule set that governs usage documentation, with
-the reader back in the sentence, plus the shaping that makes an answer scannable.
+This skill sets the voice: the rule set that governs technical documentation,
+with the reader back in the sentence, plus the shaping that makes an answer scannable.
 
 Three references set the rules. **The Elements of Style** supplies the
 composition principles: cut what does no work, put the meaning where the eye
 lands. **The Google developer documentation style guide** supplies the developer
 conventions: person, tense, mood, word choice, formatting. **ASD-STE100** supplies
-ambiguity control for a reader who cannot ask a follow-up question. `usage-docs`
-merges the three, and this skill inherits that merge. The shape on top of it comes
+ambiguity control for a reader who cannot ask a follow-up question.
+`technical-docs` merges the three, and this skill inherits that merge. The shape on top of it comes
 from `i-have-adhd`: answer first, numbered steps, state restated, wins visible.
 
 Where the three disagree, four resolutions hold, and the fourth is the one that
-separates this skill from `usage-docs`:
+separates this skill from `technical-docs`:
 
 1. **Brevity against completeness.** Cut the words that carry no meaning, and
    keep every word that carries structure.
 2. **Variety against repetition.** Vary the sentence shape, never the terminology.
 3. **Mood.** STE requires the imperative for procedures. Here it covers anything
    the reader performs, and the indicative carries everything else.
-4. **Person.** Google writes in second person, and a usage doc turns every
+4. **Person.** Google writes in second person, and a technical doc turns every
    sentence onto the system. A reply follows Google: `you` is the right word, and
    the reader is the subject wherever the sentence is about them.
 

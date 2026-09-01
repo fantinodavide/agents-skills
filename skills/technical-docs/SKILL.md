@@ -1,11 +1,11 @@
 ---
-name: usage-docs
-description: Write usage documentation for a system you built — a config file, a panel feature, a CLI, an API, a service someone else operates. Use for a knowledgebase article, a user guide, a README section, or docs for a feature that was just implemented. Triggers include "write a guide", "document this", "knowledgebase article", "user docs", "explain how to use". Not for internal design notes or code comments.
+name: technical-docs
+description: Write technical documentation for a system you built — a config file, a panel feature, a CLI, an API, a service someone else operates. Use for a knowledgebase article, a user guide, a README section, or docs for a feature that was just implemented. Triggers include "write a guide", "document this", "knowledgebase article", "user docs", "explain how to use". Not for internal design notes or code comments.
 ---
 
-# Usage documentation
+# Technical documentation
 
-Usage documentation tells a reader what a system does and which parts of it they
+Technical documentation tells a reader what a system does and which parts of it they
 control. It is not a task list, not a tour of the implementation, and not a
 transcript of the decisions that produced the feature.
 
@@ -32,7 +32,7 @@ wins, and the contradiction is worth reporting rather than quietly fixing.
 
 ## Describe the system, don't command the reader
 
-A usage doc is read by someone deciding, not by someone taking dictation. Write
+A technical doc is read by someone deciding, not by someone taking dictation. Write
 what the system does and what each setting means, so the reader chooses.
 
 | Instead of | Write |

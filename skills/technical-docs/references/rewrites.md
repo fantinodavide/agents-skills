@@ -1,7 +1,7 @@
 # Before and after
 
 Pairs taken from real documentation passes. The left column is not wrong
-English; it is the wrong stance for a usage document.
+English; it is the wrong stance for a technical document.
 
 ## Procedure that isn't a procedure
 

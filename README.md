@@ -4,8 +4,8 @@ Skills for Claude Code, kept outside the projects that use them.
 
 | Skill | What it covers |
 |---|---|
-| [`usage-docs`](skills/usage-docs/SKILL.md) | Usage documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, the checks that keep claims true, and one merged style rule set from Strunk, the Google developer documentation style guide, and ASD-STE100. |
-| [`clear-replies`](skills/clear-replies/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. The `usage-docs` rules with the reader addressed directly, plus lists, numbered steps, and a named next action. Doubles as a Claude Code output style. |
+| [`technical-docs`](skills/technical-docs/SKILL.md) | Technical documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, the checks that keep claims true, and one merged style rule set from Strunk, the Google developer documentation style guide, and ASD-STE100. |
+| [`clear-replies`](skills/clear-replies/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. The `technical-docs` rules with the reader addressed directly, plus lists, numbered steps, and a named next action. Doubles as a Claude Code output style. |
 
 ## Install
 
@@ -13,13 +13,13 @@ Claude Code loads skills from `~/.claude/skills`. A symlink keeps this repo the
 single source:
 
 ```bash
-ln -s "$PWD/skills/usage-docs" ~/.claude/skills/usage-docs
+ln -s "$PWD/skills/technical-docs" ~/.claude/skills/technical-docs
 ```
 
 On Windows, from an elevated PowerShell prompt:
 
 ```powershell
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills\usage-docs" -Target "$PWD\skills\usage-docs"
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\skills\technical-docs" -Target "$PWD\skills\technical-docs"
 ```
 
 Copying the directory works too, at the cost of drift.

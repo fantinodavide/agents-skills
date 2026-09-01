@@ -1,6 +1,6 @@
 # The merged style rule set
 
-Three sources, reconciled into one set of rules for usage documentation:
+Three sources, reconciled into one set of rules for technical documentation:
 
 - **The Elements of Style**, Strunk's composition principles (rules 8–18). Cut
   what does no work; put the meaning where the reader's eye lands.
@@ -108,7 +108,7 @@ interchangeable" before explaining why is a sentence spent on suspense.
 
 ## Where the three conflict
 
-1. **Mood.** STE-100 requires the imperative for procedures; usage
+1. **Mood.** STE-100 requires the imperative for procedures; technical
    documentation describes the system rather than commanding the reader.
    Resolution: the imperative appears only inside a genuine numbered procedure,
    and the indicative carries everything else. STE's sentence mechanics apply to
@@ -119,7 +119,7 @@ interchangeable" before explaining why is a sentence spent on suspense.
 3. **Variety against repetition.** Strunk warns off monotonous sentence
    patterns; STE demands identical wording for identical things. Resolution:
    vary the sentence shape, never the terminology.
-4. **Person.** Google writes in second person; a usage doc describes a system
+4. **Person.** Google writes in second person; a technical doc describes a system
    rather than a session with a reader. Resolution: the system, the file, or the
    setting is the subject of every sentence, and the reader never appears as
    `you`. A language with an impersonal form uses it, such as Italian `si esegue`
