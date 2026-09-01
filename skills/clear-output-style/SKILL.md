@@ -1,9 +1,9 @@
 ---
-name: clear-replies
+name: clear-output-style
 description: Speak to a person in plain, checkable language — the answer first, one fact per sentence, literal terms, short vertical lists, no preamble and no recap. Use for chat replies, progress reports, plans, review notes, and any other message a person reads. Triggers include "answer plainly", "cut the fluff", "clear reply". Not for code, and not for technical documentation, which has its own skill.
 ---
 
-# Clear replies
+# Clear output style
 
 A reply is read by someone who asked a question and wants to act on the answer.
 This skill sets the voice: the rule set that governs technical documentation,
