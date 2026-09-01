@@ -1,6 +1,6 @@
 {
   "name": "fantinodavide-agents-skills",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Writing skills for coding agents: technical documentation for a system you built, and a clear output style for everything an agent says to a person.",
   "outputStyles": "./skills/clear-output-style/",
   "author": {
