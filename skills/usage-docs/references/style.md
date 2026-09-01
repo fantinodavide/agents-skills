@@ -29,6 +29,9 @@ Where they disagree, the resolution is stated at the end.
   accept anything other than an object". Reserve `not` for denial and contrast.
 - **Specific over general, definite over vague, concrete over abstract.** Not
   "robust validation" but "the parser refuses a config that names both forms".
+- **Literal terms, never figurative.** A metaphor asks the reader to translate
+  before they can act, and two readers translate it differently. Not "the
+  variables move the target" but "the variables name a different instance".
 - **Related words together.** Subject beside verb, modifier beside what it
   modifies, relative pronoun straight after its antecedent.
 - **The emphatic word last.** End the sentence on the consequence:
@@ -116,14 +119,20 @@ interchangeable" before explaining why is a sentence spent on suspense.
 3. **Variety against repetition.** Strunk warns off monotonous sentence
    patterns; STE demands identical wording for identical things. Resolution:
    vary the sentence shape, never the terminology.
-4. **Person.** Google writes in second person; a usage doc's subject is often
-   the system. Resolution: `you` for what the reader does, sees, or chooses; the
-   system is the subject when the system acts.
+4. **Person.** Google writes in second person; a usage doc describes a system
+   rather than a session with a reader. Resolution: the system, the file, or the
+   setting is the subject of every sentence, and the reader never appears as
+   `you`. A language with an impersonal form uses it, such as Italian `si esegue`
+   or `va eseguito` for `esegui`.
 
 ## The pass over a finished draft
 
 - Search the draft for `just`, `simply`, `please`, `easy`, `allows you to`,
   `in order to`, `e.g.`, `i.e.`, `currently`. Each hit is a cut or a swap.
+- Search for `you`, `your`, and the second-person forms of the language. Each hit
+  is a sentence to turn around onto the system.
+- Read the verbs on their own. A verb that describes a physical movement, a
+  birth, or an arrival is a metaphor standing where a plain verb belongs.
 - Search for ` is ` and ` are ` followed by a past participle. Each hit is a
   passive to turn around or to justify.
 - Search for `ing,` and `ing.` at a clause end. Each hit is a gerund that names

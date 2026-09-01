@@ -45,6 +45,43 @@ Imperative mood still fits a genuine sequence the reader performs in order, such
 as registering an application at a third party before the config will work. Use
 it there, and nowhere else. `references/rewrites.md` holds more pairs.
 
+## Keep the reader out of the sentence
+
+The subject of every sentence is the system, the file, or the setting. The reader
+never appears as `you`, and never receives an instruction outside a numbered
+procedure. A document that addresses the reader reads as a support message; a
+document that describes the system reads as a reference, and the same sentence
+serves the operator, the auditor, and the person who arrives a year later.
+
+| Addressing the reader | Describing the system |
+|---|---|
+| Use `kc-init.sh` to set up a new environment. | `kc-init.sh` loads the realm on a fresh instance. |
+| Change the value in `credentials` and run the script again. | A new value in `credentials` takes effect at the next run with `ON_EXISTS=OVERWRITE`. |
+| Keep the dump out of the repository. | `clients.json` holds client secrets, so the dump stays out of the repository. |
+| You can point it at another instance with `KC_URL`. | `KC_URL` names the instance the script configures. |
+
+Languages with an impersonal form use it: Italian `si esegue` or `va eseguito`
+rather than `esegui`, and the same for the passive-capable equivalents in other
+languages. English carries the rule through the indicative and the system as
+subject.
+
+## Plain terms, never figurative
+
+A technical document names the thing. A figure of speech makes the reader
+translate before they can act, and two readers translate it differently.
+
+| Figurative | Literal |
+|---|---|
+| Environment variables move the target. | Environment variables name a different instance. |
+| An export produces a snapshot of the source. | An export writes the source configuration to one JSON file per resource type. |
+| Moving the data between the two formats is by hand. | Converting between the two formats is manual. |
+| The passwords ride in with the users. | The script applies the passwords from the JSON to the users. |
+| The setting only touches roles and clients. | The setting changes only roles and clients. |
+
+The same rule covers the softer cases. A file that "is born from" a dump derives
+from it, a value that "lands" takes effect, and a request that "finishes with" an
+error fails with it.
+
 ## Document what the reader controls, and nothing else
 
 Draw the line before writing the outline:
@@ -122,8 +159,8 @@ drafting. Six rules cover most sentences:
 - One fact, one sentence. A second sentence restating it, and a third drawing
   the moral, are the commonest defect in a careful draft.
 - The consequence goes at the end of the sentence.
-- Second person for what the reader does; the system is the subject when the
-  system acts.
+- The system, the file, or the setting is the subject of every sentence. The
+  reader never appears as `you`.
 
 Read `references/anti-patterns.md` before finishing. It lists the tells that
 make documentation read as generated: adjective padding, the rule of three,
@@ -137,7 +174,9 @@ inline-header bullet lists, summary sections, and the vocabulary cluster around
 - Every example complete, and the multi-entry shape shown where it matters.
 - No section that only restates the section above it, and no sentence that only
   restates the sentence above it.
-- No sentence that tells the reader what to do outside a real sequence.
+- No sentence that tells the reader what to do outside a real sequence, and no
+  `you` anywhere.
+- No figurative verb where a plain one exists.
 - Every heading is a noun a reader could scan for, and the set of them reads as
   a table of contents rather than a plot.
 - No detail split into its own file that the main page then has to summarize.
