@@ -52,3 +52,26 @@ skills/<name>/
     SKILL.md
     references/*.md
 ```
+
+## Credits
+
+The rules in these skills come from five sources.
+
+| Source | Author | License | What it supplies |
+|---|---|---|---|
+| [The Elements of Style](https://www.gutenberg.org/ebooks/37134) (1918) | William Strunk Jr. | Public domain | Composition principles: cut what does no work, put the meaning where the eye lands. |
+| [Google developer documentation style guide](https://developers.google.com/style) | Google | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Developer conventions: person, tense, mood, word choice, formatting. |
+| [ASD-STE100](https://asd-ste100.org) | AeroSpace and Defence Industries Association of Europe | ASD's own terms, free to download | Ambiguity control: one meaning per word, one action per sentence, short sentences. |
+| [i-have-adhd](https://github.com/ayghri/i-have-adhd) | Ayoub Ghriss | MIT | The output shape: answer first, numbered steps, state restated each turn, wins visible. |
+| [caveman](https://github.com/JuliusBrussee/caveman) | Julius Brussee | MIT | The compressed mode `clear-output-style` hands the non-user-facing half of the output to. |
+
+The Google style guide and ASD-STE100 are summarized rather than reproduced. No
+approved-word dictionary from ASD-STE100 appears here, and text under a
+contractual STE requirement is checked against the official dictionary rather
+than against these files.
+
+## License
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), full text in
+[`LICENSE`](LICENSE). Copyright 2026 Davide Fantino. Reuse and adaptation are
+free with attribution.

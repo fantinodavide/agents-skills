@@ -284,3 +284,8 @@ reproduced. ASD-STE100 is ASD's standard, free to download from asd-ste100.org;
 the rule categories are paraphrased and the approved-word dictionary is not
 reproduced. Text under a contractual STE requirement is checked word by word
 against the official dictionary, not against this file.
+
+The output shape comes from [i-have-adhd](https://github.com/ayghri/i-have-adhd)
+by Ayoub Ghriss, MIT licensed. The compressed mode named above is
+[caveman](https://github.com/JuliusBrussee/caveman) by Julius Brussee, MIT
+licensed. This file is CC BY 4.0.

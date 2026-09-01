@@ -151,3 +151,6 @@ than reproduced. ASD-STE100 is ASD's standard, free to download from
 asd-ste100.org; this file paraphrases rule categories only. Documentation with a
 contractual STE requirement is checked word by word against the official
 dictionary, not against this summary.
+
+This file is CC BY 4.0. Attribution goes to Google for the developer
+documentation style guide it summarizes, and to the repository it ships in.
