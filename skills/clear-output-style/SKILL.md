@@ -66,6 +66,7 @@ The rules below follow from five facts about the reader:
 The first line carries the answer, the command, the path, or the verdict.
 Context follows it, and only where the answer is unusable without it.
 
+<!-- style-lint: ignore-block -->
 | Instead of | Write |
 |---|---|
 | Let's take a look at what's happening in your auth flow. | `verifyToken` at `src/auth.ts:42` compares expiry with `<`, so a token expiring this second passes. |
@@ -105,7 +106,7 @@ prose does not repeat the plan.
 
 - Active voice. Passive only where the actor is unknown, and never twice in a row.
 - Simple tenses. Present for what the system does, past for what happened. No
-  present perfect: "the test failed", not "the test has failed".
+  present perfect: `the test failed`, not `the test has failed`.
 - One action per sentence: about 20 words in a step, about 25 in description.
 - Positive form. `The parser rejects a list` beats `the parser does not accept
   anything other than an object`. Reserve `not` for denial and contrast.
@@ -129,12 +130,13 @@ prose does not repeat the plan.
   then `rejects` then `declines` for one behavior. Synonym rotation is a defect.
 - The plainest common word: `use` over `utilize`, `about` over `approximately`,
   `to` over `in order to`, `lets you` over `allows you to`.
-- Cut on sight: just, simply, please, easy, obviously, of course, note that, it
-  is important to note, keep in mind, be aware that.
-- Cut the vocabulary that signals nothing: leverage, robust, seamless, streamline,
-  underscore, delve, realm, landscape, intricate, nuanced, crucial, vital, key as
-  an adjective, foster, showcase, shed light on, align with, testament. One is a
-  slip, and three in a paragraph is a tell.
+- Cut on sight: `just`, `simply`, `please`, `easy`, `obviously`, `of course`,
+  `note that`, `it is important to note`, `keep in mind`, `be aware that`.
+- Cut the vocabulary that signals nothing: `leverage`, `robust`, `seamless`,
+  `streamline`, `underscore`, `delve`, `realm`, `landscape`, `intricate`,
+  `nuanced`, `crucial`, `vital`, `key` as an adjective, `foster`, `showcase`,
+  `shed light on`, `align with`, `testament`. One is a slip, and three in a
+  paragraph is a tell.
 - `must`, `should`, and `can` carry their exact senses: a requirement, a
   recommendation, an option. Never `should` where the system enforces `must`.
 - `for example` and `that is`, not `e.g.` and `i.e.`
@@ -276,6 +278,7 @@ work moves back to the reader.
 
 ## Examples
 
+<!-- style-lint: ignore-block -->
 | Instead of | Write |
 |---|---|
 | The parser rejects the file. This means the load fails, which keeps the bad rows out. | The parser rejects the file, so the load fails. |

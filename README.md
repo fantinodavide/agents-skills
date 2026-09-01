@@ -56,6 +56,33 @@ Outside a plugin install, a symlink does the same:
 ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-output-style.md
 ```
 
+## Checking a draft
+
+`clear-output-style` states part of its pre-send check as searches, so a script
+can run that part:
+
+```bash
+python3 scripts/style_lint.py output-styles/clear-output-style.md
+cat reply.md | python3 scripts/style_lint.py -
+```
+
+The script needs Python 3 and nothing else. It reports the filler words, the
+signal-free vocabulary, `e.g.` and `i.e.`, the perfect tense, the passive voice,
+British spelling, `here` as link text, a second em dash in a paragraph, and a
+sentence past 25 words. `--search` adds the gerund check, which reports hits for
+a reader to settle rather than errors. `--selftest` runs the assertions.
+
+The script reads prose. It skips fenced code, inline code, and YAML frontmatter.
+A line ending in `<!-- style-lint: ignore -->` is skipped, and a
+`<!-- style-lint: ignore-block -->` comment skips every line under it until the
+next blank line. The example tables carry the block marker, because a table of
+defects quotes the defects it names.
+
+What the script cannot check is the half that decides whether a reply works:
+whether the answer leads, whether you did the work you own, whether the state is
+restated, and whether the next action is one the reader can run. That half needs
+a reader or a judge.
+
 ## Layout
 
 Each skill is a directory holding `SKILL.md`, whose frontmatter carries the

@@ -55,7 +55,7 @@ serves the operator, the auditor, and the person who arrives a year later.
 
 | Addressing the reader | Describing the system |
 |---|---|
-| Use `kc-init.sh` to set up a new environment. | `kc-init.sh` loads the realm on a fresh instance. |
+| Use `kc-init.sh` to set up a new environment. | `kc-init.sh` loads the realm on a fresh instance. | <!-- style-lint: ignore -->
 | Change the value in `credentials` and run the script again. | A new value in `credentials` takes effect at the next run with `ON_EXISTS=OVERWRITE`. |
 | Keep the dump out of the repository. | `clients.json` holds client secrets, so the dump stays out of the repository. |
 | You can point it at another instance with `KC_URL`. | `KC_URL` names the instance the script configures. |
@@ -165,7 +165,7 @@ drafting. Six rules cover most sentences:
 Read `references/anti-patterns.md` before finishing. It lists the tells that
 make documentation read as generated: adjective padding, the rule of three,
 inline-header bullet lists, summary sections, and the vocabulary cluster around
-"leverage", "robust", "seamless", and "underscore".
+`leverage`, `robust`, `seamless`, and `underscore`.
 
 ## Before you call it done
 
