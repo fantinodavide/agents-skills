@@ -77,7 +77,7 @@ than a second copy of the same text. `/output-style` lists it after an install.
 
 ## Credits
 
-The rules in these skills come from five sources.
+The rules in these skills come from six sources.
 
 | Source | Author | License | What it supplies |
 |---|---|---|---|
@@ -86,6 +86,7 @@ The rules in these skills come from five sources.
 | [ASD-STE100](https://asd-ste100.org) | AeroSpace and Defence Industries Association of Europe | ASD's own terms, free to download | Ambiguity control: one meaning per word, one action per sentence, short sentences. |
 | [i-have-adhd](https://github.com/ayghri/i-have-adhd) | Ayoub Ghriss | MIT | The output shape: answer first, numbered steps, state restated each turn, wins visible. |
 | [caveman](https://github.com/JuliusBrussee/caveman) | Julius Brussee | MIT | The compressed mode `clear-output-style` hands the non-user-facing half of the output to. |
+| [attention-control](https://github.com/aaddrick/attention-control) | aaddrick | MIT | Three rules in `clear-output-style`: own the work you can finish, never invent a specific, and the full reach of an irreversible action. |
 
 The Google style guide and ASD-STE100 are summarized rather than reproduced. No
 approved-word dictionary from ASD-STE100 appears here, and text under a
