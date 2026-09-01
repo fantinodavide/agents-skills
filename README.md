@@ -1,6 +1,8 @@
-# claude-skills
+# agents-skills
 
-Skills for Claude Code, kept outside the projects that use them.
+Skills for coding agents, kept outside the projects that use them. Claude Code
+reads them from `~/.claude/skills`, and any agent that reads markdown
+instructions can use the same files.
 
 | Skill | What it covers |
 |---|---|
