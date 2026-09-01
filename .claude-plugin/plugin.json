@@ -1,0 +1,9 @@
+{
+  "name": "fantinodavide-agents-skills",
+  "version": "0.1.0",
+  "description": "Writing skills for coding agents: technical documentation for a system you built, and a clear output style for everything an agent says to a person.",
+  "author": {
+    "name": "Davide Fantino",
+    "url": "https://github.com/fantinodavide"
+  }
+}

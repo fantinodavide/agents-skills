@@ -1,0 +1,17 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "agents-skills",
+  "description": "Writing skills for coding agents, merged from Strunk, the Google developer documentation style guide, and ASD-STE100.",
+  "owner": {
+    "name": "Davide Fantino",
+    "url": "https://github.com/fantinodavide"
+  },
+  "plugins": [
+    {
+      "name": "fantinodavide-agents-skills",
+      "description": "Technical documentation and a clear output style, as two skills an agent loads on demand.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

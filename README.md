@@ -9,10 +9,22 @@ instructions can use the same files.
 | [`technical-docs`](skills/technical-docs/SKILL.md) | Technical documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, the checks that keep claims true, and one merged style rule set from Strunk, the Google developer documentation style guide, and ASD-STE100. |
 | [`clear-output-style`](skills/clear-output-style/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. The `technical-docs` rules with the reader addressed directly, plus lists, numbered steps, and a named next action. Doubles as a Claude Code output style. |
 
-## Install
+## Install as a plugin
 
-Claude Code loads skills from `~/.claude/skills`. A symlink keeps this repo the
-single source:
+The repo is a plugin marketplace holding one plugin, so both skills arrive
+together:
+
+```
+/plugin marketplace add fantinodavide/agents-skills
+/plugin install fantinodavide-agents-skills@agents-skills
+```
+
+An install tracks the repo, so a `/plugin update` brings later changes.
+
+## Install as loose skills
+
+Claude Code also loads skills from `~/.claude/skills`. A symlink keeps this repo
+the single source, and suits work on the skills themselves:
 
 ```bash
 ln -s "$PWD/skills/technical-docs" ~/.claude/skills/technical-docs
@@ -50,10 +62,16 @@ Each skill is a directory holding `SKILL.md`, whose frontmatter carries the
 sits in `references/`, which the skill reads only when it needs it.
 
 ```
+.claude-plugin/
+    marketplace.json
+    plugin.json
 skills/<name>/
     SKILL.md
     references/*.md
 ```
+
+A plugin install carries the skills and not the output style, which Claude Code
+reads from `~/.claude/output-styles`. The symlink above stays the way to get it.
 
 ## Credits
 
