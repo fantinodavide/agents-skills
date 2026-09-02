@@ -70,13 +70,14 @@ cat reply.md | python3 scripts/style_lint.py -
 ```
 
 The script needs Python 3 and nothing else. It reports the filler words, the
-signal-free vocabulary, `e.g.` and `i.e.`, the perfect tense, British spelling,
-`here` as link text, a second em dash in a paragraph, and a sentence past 25
-words. A sentence wrapped across lines counts as one sentence. `--search` adds
-the passive voice and the gerund check, which report hits for a reader to settle
-rather than errors: the style allows a passive where the actor is unknown, and
-the pattern cannot tell a trailing gerund from a noun. `--selftest` runs the
-assertions.
+signal-free vocabulary, `e.g.` and `i.e.`, the perfect tense, and British
+spelling. It also reports `here` as link text, a second em dash in a paragraph,
+and a sentence past 25 words. A sentence wrapped across lines counts as one
+sentence. `--search` adds the passive voice and the gerund check, which report
+hits for a reader to settle rather than errors. The style allows a passive where
+the actor is unknown, and the pattern cannot tell a trailing gerund from a noun.
+`--selftest` runs the assertions. The `style-lint` workflow runs both on every
+push and pull request.
 
 The script reads prose. It skips fenced code, inline code, and YAML frontmatter.
 A line ending in `<!-- style-lint: ignore -->` is skipped, and a
@@ -84,10 +85,10 @@ A line ending in `<!-- style-lint: ignore -->` is skipped, and a
 next blank line. The example tables carry the block marker, because a table of
 defects quotes the defects it names.
 
-What the script cannot check is the half that decides whether a reply works:
-whether the answer leads, whether you did the work you own, whether the state is
-restated, and whether the next action is one the reader can run. That half needs
-a reader or a judge.
+The script cannot check the half that decides whether a reply works. That half
+asks four things. Does the answer lead, did you do the work you own, is the
+state restated, and can the reader run the next action? It needs a reader or a
+judge.
 
 ## Layout
 
@@ -105,9 +106,9 @@ skills/<name>/
 ```
 
 The plugin ships the output style as well, through the `outputStyles` path in
-`plugin.json`, which points at the `clear-output-style` skill directory rather
-than a second copy of the same text. After an install, `/config` lists it under
-Output style.
+`plugin.json`. That path points at the `clear-output-style` skill directory
+rather than a second copy of the same text. After an install, `/config` lists it
+under Output style.
 
 ## Credits
 

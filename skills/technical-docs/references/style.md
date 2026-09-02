@@ -18,8 +18,8 @@ Where they disagree, the resolution is stated at the end.
   unknown or irrelevant, and never two passives in a row. "The server refuses
   the config", not "the config is refused".
 - **Simple tenses.** Present for what the system does, past for what already
-  happened. No present perfect: "we received the report", not "we have received
-  the report".
+  happened. No present perfect: `we received the report`, not
+  `we have received the report`.
 - **One instruction per sentence.** About 20 words in a step, about 25 in
   description. A sentence carrying two actions splits into two sentences.
 - **No ellipsis for brevity.** Keep the subject, the verb, the article, and
@@ -27,8 +27,8 @@ Where they disagree, the resolution is stated at the end.
   second reading.
 - **Positive form.** "The parser rejects a list" beats "the parser does not
   accept anything other than an object". Reserve `not` for denial and contrast.
-- **Specific over general, definite over vague, concrete over abstract.** Not
-  "robust validation" but "the parser refuses a config that names both forms".
+- **Specific over general, definite over vague, concrete over abstract.**
+  `The parser refuses a config that names both forms`, not `robust validation`.
 - **Literal terms, never figurative.** A metaphor asks the reader to translate
   before they can act, and two readers translate it differently. Not "the
   variables move the target" but "the variables name a different instance".
@@ -50,7 +50,8 @@ Where they disagree, the resolution is stated at the end.
 - **The plainest common word.** `use` over `utilize`, `help` over `facilitate`,
   `about` over `approximately`, `lets you` over `allows you to`, `to` over
   `in order to`.
-- **Cut on sight**: just, simply, please, easy, obviously, of course, note that.
+- **Cut on sight**: `just`, `simply`, `please`, `easy`, `obviously`, `of course`,
+  `note that`.
   They add nothing, or they condescend to a reader who is stuck.
 - **`must`, `should`, `can`** carry their exact senses: a requirement, a
   recommendation, an option. Never `should` where the system enforces `must`.
@@ -66,8 +67,8 @@ Where they disagree, the resolution is stated at the end.
 
 ## Say it once
 
-The commonest defect in a careful draft is not a wrong sentence but a second
-sentence restating the first from a new angle, and a third drawing the moral.
+The commonest defect in a careful draft is a second sentence restating the
+first from a new angle, and a third drawing the moral.
 One fact, one sentence.
 
 > Use a deploy key with read access to that one repository. The reader can read
