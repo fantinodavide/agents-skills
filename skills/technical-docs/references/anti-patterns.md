@@ -6,15 +6,16 @@ reader nothing they can act on.
 
 ## Vocabulary that signals nothing
 
-Cut on sight: leverage, robust, seamless, streamline, underscore, underpin,
-delve, realm, landscape, tapestry, intricate, multifaceted, nuanced, crucial,
-vital, key (as an adjective), foster, garner, showcase, shed light on, align
-with, testament.
+Cut on sight: `leverage`, `robust`, `seamless`, `streamline`, `underscore`,
+`underpin`, `delve`, `realm`, `landscape`, `tapestry`, `intricate`,
+`multifaceted`, `nuanced`, `crucial`, `vital`, and `key` as an adjective. So do
+`foster`, `garner`, `showcase`, `shed light on`, `align with`, and `testament`.
 
 One of these is a slip. Three in a paragraph is a tell.
 
-Replace with the specific thing: not "robust validation" but "the parser refuses
-a config that names both forms".
+Replace with the specific thing:
+`the parser refuses a config that names both forms` in place of
+`robust validation`.
 
 ## Sentence patterns
 
@@ -26,8 +27,8 @@ a config that names both forms".
   plainly.
 - **False ranges.** "From a single password to enterprise SSO." Ranges pad; the
   table already lists the options.
-- **Didactic disclaimers.** "It's important to note", "keep in mind", "be aware
-  that". Delete the frame and keep the fact.
+- **Didactic disclaimers.** `It's important to note`, `keep in mind`, `be aware
+  that`. Delete the frame and keep the fact.
 - **Summary sections.** "In summary", "Overall", a closing paragraph restating
   the page. A reference document ends when the last fact ends.
 

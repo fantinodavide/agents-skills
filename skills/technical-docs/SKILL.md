@@ -15,8 +15,8 @@ and what happens if I get it wrong. Everything below serves that.
 ## Read the source before writing a line
 
 Every claim in the document is a claim about running code, so read the code that
-implements the feature: the parser or schema, the defaults, the validation
-rules, the error strings, and the place the values are consumed. Note the exact
+implements the feature. That means the parser or schema, the defaults, the
+validation rules, the error strings, and the place that consumes the values. Note the exact
 keys, the exact defaults, and the exact refusal messages.
 
 Three failures come from skipping this:
@@ -41,17 +41,17 @@ what the system does and what each setting means, so the reader chooses.
 | Set `cookie_secret` to a random string. | `cookie_secret` holds the key that signs sessions. Left out, each start invents a new one, and everyone signed in at the time signs out. |
 | Don't put the file in `data/`. | The server refuses a config it finds in `data/`, because the reader can write there and could edit its own login away. |
 
-Imperative mood still fits a genuine sequence the reader performs in order, such
-as registering an application at a third party before the config will work. Use
+Imperative mood still fits a genuine sequence the reader performs in order. An
+example is registering an application at a third party before the config works. Use
 it there, and nowhere else. `references/rewrites.md` holds more pairs.
 
 ## Keep the reader out of the sentence
 
 The subject of every sentence is the system, the file, or the setting. The reader
 never appears as `you`, and never receives an instruction outside a numbered
-procedure. A document that addresses the reader reads as a support message; a
-document that describes the system reads as a reference, and the same sentence
-serves the operator, the auditor, and the person who arrives a year later.
+procedure. A document that addresses the reader reads as a support message, and
+a document that describes the system reads as a reference. The same sentence
+then serves the operator, the auditor, and the person who arrives a year later.
 
 | Addressing the reader | Describing the system |
 |---|---|
@@ -79,8 +79,8 @@ translate before they can act, and two readers translate it differently.
 | The setting only touches roles and clients. | The setting changes only roles and clients. |
 
 The same rule covers the softer cases. A file that "is born from" a dump derives
-from it, a value that "lands" takes effect, and a request that "finishes with" an
-error fails with it.
+from it, and a value that "lands" takes effect. A request that "finishes with"
+an error fails with it.
 
 ## Document what the reader controls, and nothing else
 
@@ -132,24 +132,24 @@ around.
 
 Every example is complete enough to paste and real enough to trust: plausible
 hostnames, plausible IDs, plausible secrets by reference rather than value. Show
-the shape a reader will actually write, including the multi-entry case when one
-entry hides the shape — a single-user example makes a map look like a scalar.
+the shape a reader will write, with the multi-entry case where one entry hides
+the shape. A single-user example makes a map look like a scalar.
 
 Introduce each block with a sentence ending in a colon, and tag the fence with
 its language.
 
 ## Errors and output
 
-Quote refusals and log lines verbatim, in a fenced block, so a reader searching
-for the text they saw lands on the page that explains it. Say where the output
+Quote refusals and log lines verbatim, in a fenced block. A reader who searches
+for the text they saw then lands on the page that explains it. Say where the output
 goes and how long it survives. When the system fails closed, say what it closed
 and why that is the safe end of the trade.
 
 ## Style
 
 `references/style.md` carries the rule set: Strunk's composition principles, the
-Google developer documentation style guide, and ASD-STE100 merged into one, with
-the conflicts between them resolved for this kind of document. Read it before
+Google developer documentation style guide, and ASD-STE100 merged into one. It
+resolves the conflicts between them for this kind of document. Read it before
 drafting. Six rules cover most sentences:
 
 - Active voice, simple tenses, one action per sentence.
@@ -164,8 +164,8 @@ drafting. Six rules cover most sentences:
 
 Read `references/anti-patterns.md` before finishing. It lists the tells that
 make documentation read as generated: adjective padding, the rule of three,
-inline-header bullet lists, summary sections, and the vocabulary cluster around
-`leverage`, `robust`, `seamless`, and `underscore`.
+inline-header bullet lists, and summary sections. The vocabulary cluster around
+`leverage`, `robust`, `seamless`, and `underscore` is the last of them.
 
 ## Before you call it done
 
@@ -181,3 +181,5 @@ inline-header bullet lists, summary sections, and the vocabulary cluster around
   a table of contents rather than a plot.
 - No detail split into its own file that the main page then has to summarize.
   Two places to keep in sync is worse than one long section.
+- Zero findings from `${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py` on the page,
+  and each hit under `--search` settled by a reading.
