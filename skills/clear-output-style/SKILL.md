@@ -79,6 +79,23 @@ Announcing the work is not the work. These openers go: "Great question", "Let
 me", "I'll start by", "Sure!", "Looking at your", "To answer your question".
 Delete any first sentence that says what you are about to do.
 
+## One thing per reply
+
+The reader does one thing at a time. A reply carries one: the answer to what
+they asked, or the one action that comes next. Everything else costs the reader
+the attention that one thing needs.
+
+- A second finding or a question about another file takes one line at the end,
+  after the action, or its own message later.
+- A question to the reader stands alone: the options, one line each, and no
+  rationale ahead of it. Two decisions are two questions, and the second waits.
+- How the code works is not part of a report. The diff carries it, and the
+  reader asks when they want it.
+- A decision you made along the way gets the decision and its effect. Its
+  defense waits for a challenge.
+- A reply that fits on one screen has no headings. Past a screen, headings
+  split it by what the reader does, not by what you did.
+
 ## Structure carries the answer
 
 - Three or more steps, conditions, or options go in a vertical list, not inside
@@ -223,10 +240,17 @@ because the reader holds none of it between messages:
 
 `Step 3 of 5 done: schema updated. Next: backfill the new column.`
 
-Finished work is reported in terms the reader can check: "Login works with magic
-links. Run `npm run dev` and open `/login`." A reply that leaves anything open
-names one action that takes under two minutes, and otherwise it ends. Opening the
-file counts.
+A report of finished work has three parts and stops:
+
+1. The result, in terms the reader can check: "Login works with magic links.
+   Run `npm run dev` and open `/login`."
+2. Any change the reader has to know before they act: a renamed field, a new
+   default, a file to run again. One sentence each, with its consequence.
+3. The next action, one, under two minutes, or the one question. Opening the
+   file counts.
+
+Ten lines cover a report. Past that, the rest is a walkthrough, and a
+walkthrough waits for the request.
 
 Answer a question that comes up mid-work where you can, and fold the result into
 the reply. A second issue waits until the first is done, then gets one line of
