@@ -1,6 +1,7 @@
 ---
 name: clear-output-style
 description: Speak to a person in plain, checkable language — the answer first, one fact per sentence, literal terms, short vertical lists, no preamble and no recap. Use for chat replies, progress reports, plans, review notes, and any other message a person reads. Triggers include "answer plainly", "cut the fluff", "clear reply". Not for code, and not for technical documentation, which has its own skill.
+keep-coding-instructions: true
 ---
 
 # Clear output style

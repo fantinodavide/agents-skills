@@ -47,8 +47,10 @@ plugin ships it both ways.
 As a style it governs every reply in the session, selected with `/output-style`.
 The plugin registers it as `fantinodavide-agents-skills:clear-output-style`,
 which is the value `outputStyle` takes in `settings.json`; `clear-output-style`
-alone does not resolve. As a skill it loads on demand, in this session or in a
-subagent that writes something a person reads.
+alone does not resolve. The file sets `keep-coding-instructions: true`, so selecting
+the style keeps Claude Code's built-in coding instructions and layers the voice on
+top of them. As a skill it loads on demand, in this session or in a subagent that
+writes something a person reads.
 
 Outside a plugin install, a symlink does the same:
 
