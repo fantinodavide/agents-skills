@@ -44,7 +44,8 @@ An output style and a skill are the same file: markdown with `name` and
 `description` in the frontmatter. `clear-output-style` serves as both, and the
 plugin ships it both ways.
 
-As a style it governs every reply in the session, selected with `/output-style`.
+As a style it governs every reply in the session, selected under Output style in
+`/config`.
 The plugin registers it as `fantinodavide-agents-skills:clear-output-style`,
 which is the value `outputStyle` takes in `settings.json`; `clear-output-style`
 alone does not resolve. The file sets `keep-coding-instructions: true`, so selecting
@@ -105,7 +106,8 @@ skills/<name>/
 
 The plugin ships the output style as well, through the `outputStyles` path in
 `plugin.json`, which points at the `clear-output-style` skill directory rather
-than a second copy of the same text. `/output-style` lists it after an install.
+than a second copy of the same text. After an install, `/config` lists it under
+Output style.
 
 ## Credits
 
