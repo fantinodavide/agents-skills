@@ -62,15 +62,18 @@ ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-ou
 can run that part:
 
 ```bash
-python3 scripts/style_lint.py output-styles/clear-output-style.md
+python3 scripts/style_lint.py skills/clear-output-style/SKILL.md
 cat reply.md | python3 scripts/style_lint.py -
 ```
 
 The script needs Python 3 and nothing else. It reports the filler words, the
-signal-free vocabulary, `e.g.` and `i.e.`, the perfect tense, the passive voice,
-British spelling, `here` as link text, a second em dash in a paragraph, and a
-sentence past 25 words. `--search` adds the gerund check, which reports hits for
-a reader to settle rather than errors. `--selftest` runs the assertions.
+signal-free vocabulary, `e.g.` and `i.e.`, the perfect tense, British spelling,
+`here` as link text, a second em dash in a paragraph, and a sentence past 25
+words. A sentence wrapped across lines counts as one sentence. `--search` adds
+the passive voice and the gerund check, which report hits for a reader to settle
+rather than errors: the style allows a passive where the actor is unknown, and
+the pattern cannot tell a trailing gerund from a noun. `--selftest` runs the
+assertions.
 
 The script reads prose. It skips fenced code, inline code, and YAML frontmatter.
 A line ending in `<!-- style-lint: ignore -->` is skipped, and a
