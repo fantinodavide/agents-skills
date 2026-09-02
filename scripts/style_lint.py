@@ -96,7 +96,7 @@ EM_DASH = "—"
 FENCE = re.compile(r"^\s*```")
 INLINE_CODE = re.compile(r"`[^`]*`")
 LINK_TARGET = re.compile(r"\]\([^)]*\)")
-SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[\"'(\[*_]*[A-Z`])")
+SENTENCE_SPLIT = re.compile(r"(?<=[.!?])[*_\"')\]]*\s+(?=[\"'(\[*_]*[A-Z`])|\s*\|\s*")
 HEADING = re.compile(r"^\s{0,3}#{1,6}\s")
 TABLE_ROW = re.compile(r"^\s*\|")
 LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
@@ -169,7 +169,7 @@ def stands_alone(raw):
 
 def paragraph_text(raw, prose):
     if TABLE_ROW.match(raw):
-        return prose.replace("|", " ").strip()
+        return prose.strip().strip("|")
     return LINE_MARKER.sub("", prose).strip()
 
 
@@ -300,6 +300,9 @@ def selftest():
     assert check("%s\njust" % IGNORE_BLOCK) == [], "ignore block holds"
     assert rules_of("word " * 30) == ["length"]
     assert rules_of("word " * 25) == []
+    assert rules_of("| %s | %s |" % ("cell " * 15, "cell " * 15)) == [], "a table cell is a sentence"
+    bold_lead = "**%s.** Word %s." % (("word " * 10).strip(), ("word " * 25).strip())
+    assert check(bold_lead)[0][3] == "26 words, split it", "a sentence ends before the closing bold"
     wrapped = ("word " * 13).strip() + "\n" + ("word " * 12).strip() + " end."
     assert check(wrapped)[0][2] == "length", "a wrapped sentence is one sentence"
     assert check(wrapped)[0][3] == "26 words, split it"
