@@ -45,8 +45,10 @@ An output style and a skill are the same file: markdown with `name` and
 plugin ships it both ways.
 
 As a style it governs every reply in the session, selected with `/output-style`.
-As a skill it loads on demand, in this session or in a subagent that writes
-something a person reads.
+The plugin registers it as `fantinodavide-agents-skills:clear-output-style`,
+which is the value `outputStyle` takes in `settings.json`; `clear-output-style`
+alone does not resolve. As a skill it loads on demand, in this session or in a
+subagent that writes something a person reads.
 
 Outside a plugin install, a symlink does the same:
 
