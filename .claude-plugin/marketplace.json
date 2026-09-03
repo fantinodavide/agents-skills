@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "fantinodavide-agents-skills",
-      "description": "Technical documentation and a clear output style, as two skills an agent loads on demand.",
+      "description": "Technical documentation, a todo list of actions, and a clear output style, as three skills an agent loads on demand.",
       "source": "./",
       "category": "productivity"
     }

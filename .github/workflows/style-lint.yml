@@ -11,4 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 scripts/style_lint.py --selftest
-      - run: python3 scripts/style_lint.py skills/*/SKILL.md skills/*/references/*.md README.md
+      - run: python3 scripts/sync_rules.py --selftest
+      - run: python3 scripts/sync_rules.py --check
+      - run: python3 scripts/style_lint.py rules/*.md skills/*/SKILL.md skills/*/references/*.md README.md

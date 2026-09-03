@@ -5,181 +5,71 @@ description: Write technical documentation for a system you built — a config f
 
 # Technical documentation
 
-Technical documentation tells a reader what a system does and which parts of it they
-control. It is not a task list, not a tour of the implementation, and not a
-transcript of the decisions that produced the feature.
+What a system does and which parts of it the reader controls. Not a task
+list, not a tour of the implementation, not the decision record. The reader
+holds a goal and asks which setting gets them there, and what happens if they
+get it wrong.
 
-The reader arrives holding a goal and a question: which setting gets me there,
-and what happens if I get it wrong. Everything below serves that.
-
-## Read the source before writing a line
-
-Every claim in the document is a claim about running code, so read the code that
-implements the feature. That means the parser or schema, the defaults, the
-validation rules, the error strings, and the place that consumes the values. Note the exact
-keys, the exact defaults, and the exact refusal messages.
-
-Three failures come from skipping this:
-
-- A key documented with the wrong type, such as a list where the code requires
-  an object.
-- A constraint stated too loosely, such as "any provider" where the code accepts
-  two.
-- An error message paraphrased instead of quoted, which no one can search for.
-
-When the source contradicts an earlier draft or an existing doc, the source
-wins, and the contradiction is worth reporting rather than quietly fixing.
+`${CLAUDE_PLUGIN_ROOT}/rules/style.md` governs every sentence; read the whole
+file before drafting. "Read the source first", "Examples", and "Errors and
+output" cost the most here. Mood and person are set below.
 
 ## Describe the system, don't command the reader
 
-A technical doc is read by someone deciding, not by someone taking dictation. Write
-what the system does and what each setting means, so the reader chooses.
+The reader decides. The text says what the system does and what each setting
+means:
 
 | Instead of | Write |
 |---|---|
-| Open Files, select `auth.json`, save, and restart. | The server writes `auth.json` at first start and reads it again at every start, so a change takes effect at the next restart. |
-| Set `cookie_secret` to a random string. | `cookie_secret` holds the key that signs sessions. Left out, each start invents a new one, and everyone signed in at the time signs out. |
-| Don't put the file in `data/`. | The server refuses a config it finds in `data/`, because the reader can write there and could edit its own login away. |
+| Open Files, select `auth.json`, save, and restart. | The server reads `auth.json` at every start, so a change takes effect at the next restart. |
+| Set `cookie_secret` to a random string. | `cookie_secret` signs sessions. Left out, each start invents a new one, and everyone signed in signs out. |
+| Don't put the file in `data/`. | The server refuses a config in `data/`, because the reader can write there. |
 
-Imperative mood still fits a genuine sequence the reader performs in order. An
-example is registering an application at a third party before the config works. Use
-it there, and nowhere else. `references/rewrites.md` holds more pairs.
+The imperative fits only a sequence performed in order, such as registering an
+application at a third party. `references/rewrites.md` holds more pairs.
 
 ## Keep the reader out of the sentence
 
-The subject of every sentence is the system, the file, or the setting. The reader
-never appears as `you`, and never receives an instruction outside a numbered
-procedure. A document that addresses the reader reads as a support message, and
-a document that describes the system reads as a reference. The same sentence
-then serves the operator, the auditor, and the person who arrives a year later.
+The subject is the system, the file, or the setting. No `you`, and no
+instruction outside a numbered procedure. The same sentence then serves the
+operator, the auditor, and the reader a year later.
 
 | Addressing the reader | Describing the system |
 |---|---|
-| Use `kc-init.sh` to set up a new environment. | `kc-init.sh` loads the realm on a fresh instance. | <!-- style-lint: ignore -->
-| Change the value in `credentials` and run the script again. | A new value in `credentials` takes effect at the next run with `ON_EXISTS=OVERWRITE`. |
-| Keep the dump out of the repository. | `clients.json` holds client secrets, so the dump stays out of the repository. |
-| You can point it at another instance with `KC_URL`. | `KC_URL` names the instance the script configures. |
+| Use `seed.sh` to set up a new environment. | `seed.sh` loads the fixtures into an empty database. |
+| Change the value in `credentials` and run the script again. | A new value in `credentials` takes effect at the next run with `ON_CONFLICT=replace`. |
+| You can point it at another instance with `DB_URL`. | `DB_URL` names the instance the script configures. |
 
-Languages with an impersonal form use it: Italian `si esegue` or `va eseguito`
-rather than `esegui`, and the same for the passive-capable equivalents in other
-languages. English carries the rule through the indicative and the system as
-subject.
+Italian uses `si esegue` or `va eseguito`, never `esegui`.
 
-## Plain terms, never figurative
+## Document what the reader controls
 
-A technical document names the thing. A figure of speech makes the reader
-translate before they can act, and two readers translate it differently.
+- Reader-controlled: keys, values, files, UI actions. The subject of the page.
+- Automatic: stated as behavior in the indicative, never as a knob.
+- Operator-only: build flags, host commands, self-tests. The operator's README,
+  not the user's guide.
 
-| Figurative | Literal |
-|---|---|
-| Environment variables move the target. | Environment variables name a different instance. |
-| An export produces a snapshot of the source. | An export writes the source configuration to one JSON file per resource type. |
-| Moving the data between the two formats is by hand. | Converting between the two formats is manual. |
-| The passwords ride in with the users. | The script applies the passwords from the JSON to the users. |
-| The setting only touches roles and clients. | The setting changes only roles and clients. |
+A default shown as configurable gets configured. An operator command in a user
+guide sends the reader somewhere they cannot go.
 
-The same rule covers the softer cases. A file that "is born from" a dump derives
-from it, and a value that "lands" takes effect. A request that "finishes with"
-an error fails with it.
+## Structure
 
-## Document what the reader controls, and nothing else
+1. What it is, what governs it, and when a change takes effect. One paragraph.
+2. The options side by side, in a table.
+3. One section per option: a complete example, then its rules.
+4. Constraints as rules, with the reason.
+5. What the system reports, quoted.
+6. Limits.
 
-Draw the line before writing the outline:
-
-- **Reader-controlled**: keys they set, values they choose, files they edit,
-  actions they take in a UI. These are the subject of the document.
-- **Automatic**: what the system decides on its own. State it as behavior, in
-  the indicative — "the panel port closes", "the reader moves to a loopback
-  port". Never as a knob, and never with an override the reader wasn't meant to
-  reach for.
-- **Operator-only**: build flags, host commands, self-tests, environment set by
-  the platform. These belong in the operator's README, not the user's guide.
-
-Presenting an internal default as configurable invites someone to configure it.
-Presenting an operator command in a user guide sends a reader somewhere they
-have no access to.
-
-## A structure that answers the reader's questions in order
-
-1. **What the thing is and what governs it.** One short paragraph: the feature,
-   the file or setting that controls it, and when a change takes effect.
-2. **The options, side by side.** A table of modes or values, each with what it
-   does and what it fits. The table is where a reader picks.
-3. **One section per option**, each opening with a sentence that introduces a
-   complete, working example, then the rules that govern it.
-4. **Constraints as rules, with the reason attached.** A rule the reader
-   understands is a rule they don't fight.
-5. **What the system reports.** Where its output goes, what the startup lines
-   name, and what a refusal looks like, quoted.
-6. **Limits.** What the feature does not cover, in plain terms.
-
-Headings name the subject and stop: "Password logins", "Cloudflare tunnels",
-"Log output", "Limits". A heading that narrates hides the noun a reader is
-scanning for, and a page of them reads as a story rather than a reference:
-
-| Narrating | Naming |
-|---|---|
-| What happens when the reader crashes | Failure behavior |
-| Verification, not assumption | Self-test |
-| Putting a login in front of the replay UI | Replay UI login |
-| Yama, where the host has it | Yama |
-| Running a fork of the reader | Custom source |
-
-Not "Getting started", not "Overview", and not a verb phrase ordering the reader
-around.
-
-## Examples carry the document
-
-Every example is complete enough to paste and real enough to trust: plausible
-hostnames, plausible IDs, plausible secrets by reference rather than value. Show
-the shape a reader will write, with the multi-entry case where one entry hides
-the shape. A single-user example makes a map look like a scalar.
-
-Introduce each block with a sentence ending in a colon, and tag the fence with
-its language.
-
-## Errors and output
-
-Quote refusals and log lines verbatim, in a fenced block. A reader who searches
-for the text they saw then lands on the page that explains it. Say where the output
-goes and how long it survives. When the system fails closed, say what it closed
-and why that is the safe end of the trade.
-
-## Style
-
-`references/style.md` carries the rule set: Strunk's composition principles, the
-Google developer documentation style guide, and ASD-STE100 merged into one. It
-resolves the conflicts between them for this kind of document. Read it before
-drafting. Six rules cover most sentences:
-
-- Active voice, simple tenses, one action per sentence.
-- One word, one meaning, reused every time. Synonym rotation is a defect here.
-- The plainest common word, and nothing that adds no meaning.
-- Structure words stay: keep the article, the subject, and `that`.
-- One fact, one sentence. A second sentence restating it, and a third drawing
-  the moral, are the commonest defect in a careful draft.
-- The consequence goes at the end of the sentence.
-- The system, the file, or the setting is the subject of every sentence. The
-  reader never appears as `you`.
-
-Read `references/anti-patterns.md` before finishing. It lists the tells that
-make documentation read as generated: adjective padding, the rule of three,
-inline-header bullet lists, and summary sections. The vocabulary cluster around
-`leverage`, `robust`, `seamless`, and `underscore` is the last of them.
+Headings name the subject: "Password logins", "Log output", "Limits".
 
 ## Before you call it done
 
 - Every key, default, and error string checked against the source.
-- Nothing automatic presented as configurable, nothing operator-only present.
-- Every example complete, and the multi-entry shape shown where it matters.
-- No section that only restates the section above it, and no sentence that only
-  restates the sentence above it.
-- No sentence that tells the reader what to do outside a real sequence, and no
-  `you` anywhere.
-- No figurative verb where a plain one exists.
-- Every heading is a noun a reader could scan for, and the set of them reads as
-  a table of contents rather than a plot.
-- No detail split into its own file that the main page then has to summarize.
-  Two places to keep in sync is worse than one long section.
-- Zero findings from `${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py` on the page,
-  and each hit under `--search` settled by a reading.
+- Nothing automatic shown as configurable, nothing operator-only present.
+- Every example complete, the multi-entry shape shown.
+- No `you`, no instruction outside a real sequence.
+- No sentence restating the one above it, no figurative verb.
+- Every heading a noun, and the set reads as a table of contents.
+- `${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py` reports nothing, and each
+  `--search` hit is settled.

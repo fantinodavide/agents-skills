@@ -36,7 +36,8 @@ FILLER = (
 )
 SIGNAL_FREE = (
     r"shed light on|align with|leverage|robust|seamless|streamline|underscore|"
-    r"delve|realm|landscape|intricate|nuanced|crucial|vital|foster|showcase|testament"
+    r"underpin|delve|realm|landscape|tapestry|intricate|multifaceted|nuanced|"
+    r"crucial|vital|foster|garner|showcase|testament"
 )
 BRITISH = r"behaviour|recognise|organisation|licence|centre|analyse|catalogue|colour"
 
@@ -324,8 +325,11 @@ def selftest():
 def read_source(path):
     if path == "-":
         return sys.stdin.buffer.read().decode("utf-8")
-    with open(path, encoding="utf-8") as handle:
-        return handle.read()
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return handle.read()
+    except OSError as failure:
+        raise SystemExit("%s: cannot read: %s" % (path, failure.strerror))
 
 
 def main(argv):
