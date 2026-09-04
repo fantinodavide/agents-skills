@@ -7,6 +7,7 @@ the work was owned, whether a next action is runnable.
 
 Usage:
     python3 scripts/style_lint.py [--search] FILE [FILE ...]
+    python3 scripts/style_lint.py [--search] --baseline OLD NEW
     cat reply.md | python3 scripts/style_lint.py -
     python3 scripts/style_lint.py --selftest
 
@@ -15,6 +16,12 @@ an error finding, and 0 when it has none. `--search` adds the checks a reader ha
 settle, and a search finding never changes the exit status. Two checks sit there: the
 passive, which the style allows where the actor is unknown, and the gerund at a clause
 end, which the pattern cannot tell from a noun.
+
+`--baseline OLD NEW` reports what NEW adds to OLD, so an edit to a file that already
+has findings is judged on the edit alone. A finding matches the baseline by rule and
+message, never by line number, which moves as text is inserted above it. A rule the
+baseline breaks twice stays quiet until a third break appears. `git show HEAD:path`
+writes the baseline for a file under review.
 
 Sentence length and the em dash count run over a paragraph rather than a line, because
 the markdown here wraps one sentence across several lines. A blank line, a fence, a
@@ -278,6 +285,9 @@ def selftest():
     def rules_of(text, searches=False):
         return [name for _, _, name, _ in check(text, searches=searches)]
 
+    def rules_of_added(findings, baseline):
+        return [name for _, _, name, _ in added(findings, baseline)]
+
     assert rules_of("We just did it.") == ["filler"]
     assert rules_of("Restart it in order to load the key.") == ["filler"]
     assert rules_of("The setup is easy.") == ["filler"]
@@ -319,7 +329,49 @@ def selftest():
     assert check("Working memory is small, and it holds nothing.", searches=True) == []
     assert check("The parser rejects the file, so the load fails.") == []
     assert check("---\nname: just\n---\nA clean line.") == [], "frontmatter is not prose"
+
+    long_one = ("word " * 30).strip() + "."
+    long_two = ("other " * 30).strip() + "."
+    was = check(long_one)
+    assert rules_of_added(check(long_one), was) == [], "a carried finding stays quiet"
+    assert rules_of_added(check(long_one + "\n\n" + long_two), was) == ["length"], (
+        "a second break of a carried rule is reported"
+    )
+    assert rules_of_added(check("We just did it."), was) == ["filler"], (
+        "a rule the baseline never broke is reported"
+    )
+    assert added([], check(long_one)) == [], "a fixed finding is not reported"
+    assert take_path(["--baseline", "old.md", "new.md"], "--baseline") == (
+        "old.md",
+        ["new.md"],
+    )
+    assert take_path(["new.md"], "--baseline") == (None, ["new.md"])
     print("selftest ok")
+
+
+def added(findings, baseline):
+    """The findings a baseline does not already account for, rule and message alike."""
+    spent = {}
+    for _, _, name, message in baseline:
+        spent[(name, message)] = spent.get((name, message), 0) + 1
+    fresh = []
+    for finding in findings:
+        key = (finding[2], finding[3])
+        if spent.get(key):
+            spent[key] -= 1
+        else:
+            fresh.append(finding)
+    return fresh
+
+
+def take_path(argv, flag):
+    """Pulls `flag` and the path after it out of argv."""
+    if flag not in argv:
+        return None, argv
+    at = argv.index(flag)
+    if at + 1 >= len(argv):
+        raise SystemExit("%s names the file to compare against" % flag)
+    return argv[at + 1], argv[:at] + argv[at + 2:]
 
 
 def read_source(path):
@@ -336,11 +388,16 @@ def main(argv):
     if "--selftest" in argv:
         selftest()
         return 0
+    baseline, argv = take_path(argv, "--baseline")
     searches = "--search" in argv
     paths = [a for a in argv if not a.startswith("-")] or ["-"]
+    if baseline and len(paths) != 1:
+        raise SystemExit("--baseline compares one file against one file")
     findings = []
     for path in paths:
         findings += check(read_source(path), path, searches)
+    if baseline:
+        findings = added(findings, check(read_source(baseline), baseline, searches))
     for path, number, name, message in findings:
         print("%s:%d: %s: %s" % (path, number, name, message))
     print("%d finding(s)" % len(findings), file=sys.stderr)

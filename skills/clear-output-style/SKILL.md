@@ -276,7 +276,8 @@ backfill script" is a label, `scripts/backfill.py` is an action.
 `${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py` runs the searches, the perfect
 tense, British spelling, `here` as link text, the second em dash, and the
 sentence past 25 words. `--search` adds the passive and the gerund for a
-reader to settle.
+reader to settle. On an edit, `--baseline OLD NEW` reports what NEW adds, so
+the findings a page already carried leave the new one in plain sight.
 
 <!-- /rules -->
 

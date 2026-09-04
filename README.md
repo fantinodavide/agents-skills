@@ -112,12 +112,18 @@ that part:
 ```bash
 python3 scripts/style_lint.py skills/clear-output-style/SKILL.md
 cat reply.md | python3 scripts/style_lint.py -
+git show HEAD:docs/guide.md > /tmp/before.md
+python3 scripts/style_lint.py --baseline /tmp/before.md docs/guide.md
 ```
 
 The script needs Python 3 and nothing else. It reports the filler words, part of
 the signal-free vocabulary, `e.g.` and `i.e.`, `currently`, the perfect tense,
 and British spelling. It also reports `here`, `this`, or `link` as link text, a
 second em dash in a paragraph, and a sentence past 25 words.
+
+`--baseline OLD NEW` reports what NEW adds to OLD, so an edit to a page that
+already breaks a rule is judged on the edit. A finding matches the baseline by
+rule and message rather than by a line number, which moves.
 
 A sentence wrapped across lines counts as one sentence. `--search` adds the passive voice and the
 gerund check, which report hits for a reader to settle rather than errors. The
