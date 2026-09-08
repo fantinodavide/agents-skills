@@ -1,0 +1,86 @@
+[
+  {
+    "id": "direct_answer",
+    "context": "The export name controls only the downloaded filename. It does not change the exported rows or the source data.",
+    "user": "If I change the export name, will it change the data too?",
+    "criteria": "Answer no, explain the filename effect, and stop without a procedure or unrelated qualification."
+  },
+  {
+    "id": "causal_explanation",
+    "context": "A server created a job, but its response never reached the client. The client showed a failed request. Retrying sent a new request, and the server created a second job because it does not recognize repeated submissions.",
+    "user": "Why are there two jobs if the first request failed? Explain it without assuming I know networking.",
+    "criteria": "Connect the missing response to the client's failure message, explain why the server can still have created the first job, and explain the duplicate without unexplained jargon."
+  },
+  {
+    "id": "multipart_decision",
+    "context": "Exports take around 40 seconds. The gateway closes requests after 30 seconds. A background queue is available but requires job status storage. Failed jobs can retry; repeated attempts must not publish duplicate files. No implementation has started.",
+    "user": "Should exports stay in the web request or move to the queue? Explain the trade-off, what happens on failure, and what the user interface needs to show.",
+    "criteria": "Recommend the queue using the timing evidence. Address storage cost, failure and retry behavior, duplicate prevention, and pending/success/failure UI states without claiming implementation."
+  },
+  {
+    "id": "completion_with_limit",
+    "context": "The task was to fix a file watcher that ignored paths with spaces. The edit is complete. Linux tests for paths with and without spaces pass. Windows was not tested. Earlier progress updates mentioned the parser edit and test run. This is the final report, and no more tools are available.",
+    "user": "Are we done?",
+    "criteria": "Give a self-contained outcome and verification. Keep the untested Windows behavior visible without claiming universal success or inventing a command or new scope."
+  },
+  {
+    "id": "diagnostic_uncertainty",
+    "context": "A service responds slowly. CPU use is low. No request traces, database timings, or network timings are available. No investigation was performed beyond those observations.",
+    "user": "So the database must be the problem, right?",
+    "criteria": "Disagree with the unsupported certainty, explain that low CPU does not locate the delay, and identify useful timing evidence without inventing a diagnosis."
+  },
+  {
+    "id": "correction",
+    "context": "The assistant previously said changing a setting requires a restart. The user supplies source code that reloads the setting on each request. The new source is authoritative, and the previous answer was wrong.",
+    "user": "This reads the setting on every request. Your restart advice was wrong.",
+    "criteria": "Own the error, correct the restart advice, and explain when the setting takes effect. Avoid defensiveness, an apology sequence, or needless follow-up work."
+  },
+  {
+    "id": "focused_followup",
+    "context": "The previous reply already explained how a search index updates. New documents appear after the next indexing cycle, which runs every five minutes. Deleting a document removes it from search immediately.",
+    "user": "And deleted documents?",
+    "criteria": "Answer that deletion removes the document from search immediately without repeating the indexing explanation."
+  },
+  {
+    "id": "progress_update",
+    "context": "A settings-save bug is under investigation. The handler sends the correct value. The database stores that value. The remaining uncertainty is whether the response contains the old value or the interface reuses local state. The next check compares the response with the displayed value.",
+    "user": "Any progress?",
+    "criteria": "State the meaningful findings, the remaining uncertainty, and the next check. Do not claim a fix, invent numbered progress, or replay tool calls."
+  },
+  {
+    "id": "holdout_missing_verification",
+    "context": "The upload validation fix is complete. Unit tests pass. No end-to-end upload test was run. There is no evidence about why that test was not run. This is a final report, and no more tools are available.",
+    "user": "What is the result?",
+    "criteria": "Report the fix and unit-test result. State the missing end-to-end check without inventing an access problem, broken environment, or reason for the omission."
+  },
+  {
+    "id": "holdout_behavior_boundary",
+    "context": "Archiving an item hides it from the default list. The implementation is unknown. There is no information about how archived items are stored or indexed.",
+    "user": "Does archive remove it from my list?",
+    "criteria": "Answer that it disappears from the default list. Avoid claims about database deletion, indexes, storage, or recovery."
+  },
+  {
+    "id": "holdout_brief_correction",
+    "context": "The assistant previously said an export uses UTC. An authoritative fixture shows that it uses the account's configured time zone. No cause for the earlier mistake is known.",
+    "user": "That is wrong: the export uses the account time zone.",
+    "criteria": "Acknowledge the error and give the corrected behavior. Avoid inventing an investigation history or adding unrelated time-zone warnings."
+  },
+  {
+    "id": "holdout_requested_depth",
+    "context": "Two editors can open the same record. Each receives a version number. On save, the server accepts a request only if its version matches the current record. An accepted save increments the version. A stale save receives a conflict response and leaves the current record unchanged. A draft may be lost if the client discards it after a conflict.",
+    "user": "Give me a thorough explanation of how this prevents one editor overwriting the other. Walk through an example and explain what the interface should do after a conflict.",
+    "criteria": "Give the mechanism, an accurate ordered example, and interface behavior that preserves the draft and explains the conflict. Supply the requested depth rather than applying a short-answer template."
+  },
+  {
+    "id": "final_holdout_focused_explanation",
+    "context": "The weekly chart intentionally includes only completed weeks. The current week is still in progress, so its data is not included. No data is missing from storage.",
+    "user": "Why isn't this week's data in the chart?",
+    "criteria": "Explain the completed-week rule and its consequence. Avoid an implementation tutorial, speculative data loss, or a new design question."
+  },
+  {
+    "id": "final_holdout_unperformed_check",
+    "context": "Request validation is fixed and the smoke test passes. No load test was run. There is no evidence about why it was not run. This is the final report, and no more tools are available.",
+    "user": "What's the result?",
+    "criteria": "Report the validation fix, passing smoke test, and unperformed load test. Do not invent a testing obstacle or claim production readiness."
+  }
+]

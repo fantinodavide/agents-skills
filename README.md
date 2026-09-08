@@ -8,13 +8,14 @@ reads markdown instructions can use the same files.
 |---|---|
 | [`technical-docs`](skills/technical-docs/SKILL.md) | Technical documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, and the checks that keep claims true. The system is the subject of every sentence. |
 | [`todo-list`](skills/todo-list/SKILL.md) | An ordered todo list of the actions a person performs to reach an end state. One numbered line per action, verb first, with every path and value the action needs. |
-| [`clear-output-style`](skills/clear-output-style/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. The shared rules with the reader addressed directly, plus lists, numbered steps, and a named next action. Doubles as a Claude Code output style. |
+| [`clear-output-style`](skills/clear-output-style/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. Connected explanations, relevant detail, and natural wording. Doubles as a Claude Code output style. |
 
-The three share one rule set, [`rules/style.md`](rules/style.md): Strunk's
-composition principles, the Google developer documentation style guide, and
-ASD-STE100 merged into one. Each skill adds what follows from its reader: the
-mood, the person, and the shape of the output. A table in `rules/style.md`
-states the mood and the person side by side, and each skill sets its own shape.
+`technical-docs` and `todo-list` share [`rules/style.md`](rules/style.md):
+Strunk's composition principles, the Google developer documentation style
+guide, and ASD-STE100 merged into one. Each skill sets its mood, person, and
+structure. `clear-output-style` is self-contained, with conversational rules
+and complete examples. It prioritizes understanding and useful completeness
+over sentence length and formatting conventions.
 
 ## Plugin install
 
@@ -53,14 +54,13 @@ foreach ($skill in 'technical-docs', 'todo-list', 'clear-output-style') {
 Copying the directory works too, at the cost of drift. Outside a plugin
 install `${CLAUDE_PLUGIN_ROOT}` is unset, so `technical-docs` and `todo-list`
 find `rules/style.md` only when the agent resolves that path to this checkout.
-`clear-output-style` carries its copy of the shared sections inline and needs
-no such path.
+`clear-output-style` contains its own rules and needs no shared-rule path.
 
 ## Output styles
 
-An output style and a skill are the same file: markdown with `name` and
-`description` in the frontmatter. `clear-output-style` serves as both, and the
-plugin ships it both ways.
+A skill and an output style both use Markdown instructions, but their metadata
+and loading behavior differ. `clear-output-style` serves as both, and the
+plugin ships the same file through both mechanisms.
 
 As a style it governs every reply in the session. Select it under Output style
 in `/config`. The plugin registers it as `fantinodavide-agents-skills:clear-output-style`,
@@ -68,7 +68,10 @@ which is the value `outputStyle` takes in `settings.json`; `clear-output-style`
 alone does not resolve. The file sets `keep-coding-instructions: true`, so selecting
 the style keeps Claude Code's built-in coding instructions and layers the voice on
 top of them. As a skill it loads on demand, in this session or in a subagent that
-writes something a person reads.
+writes something a person reads. A new Claude Code session loads changes to the
+selected output style. The `keep-coding-instructions` field is valid output-style
+metadata; a generic skill validator may reject it because its schema differs.
+These behaviors follow the [Claude Code output-style documentation](https://code.claude.com/docs/en/output-styles).
 
 Outside a plugin install, a symlink does the same:
 
@@ -76,42 +79,27 @@ Outside a plugin install, a symlink does the same:
 ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-output-style.md
 ```
 
-## One source for the shared rules
+## Rule ownership
 
-`rules/style.md` holds every shared rule once. `technical-docs` and `todo-list`
-point at it and read it when they load. Claude Code reads `clear-output-style`
-as one file when it runs as an output style, so that file carries copies of the
-shared sections inline. Each copy sits between an opening and a closing marker:
+`rules/style.md` holds the shared documentation rules. `technical-docs` and
+`todo-list` read that file when they load. Conversational changes belong in
+`skills/clear-output-style/SKILL.md`, including its complete response examples.
 
-```markdown
-<!-- rules: style.md#sentences -->
-## Sentences
-...
-<!-- /rules -->
-```
-
-The script `scripts/sync_rules.py` rewrites every copy from the section its
-marker names. The section runs from its heading to the next heading of the same
-or a higher level. The slug is the heading lowercased, with a hyphen for every
-run of characters other than letters and digits. Text outside the markers is the
-skill's own. An edit to a shared rule goes into `rules/style.md`, followed by:
-
-```bash
-python3 scripts/sync_rules.py
-```
-
-With `--check` the script exits 1 when a copy differs from the source. The
-`style-lint` workflow runs it, so a copy edited by hand fails the build until
-`rules/style.md` carries the change.
+The conversational skill has no synced documentation sections. The
+`scripts/sync_rules.py` helper remains available for files that use
+`<!-- rules: -->` markers. With `--check`, it exits 1 when a marked copy differs
+from its source. Files without markers remain unchanged.
 
 ## Draft checks
 
-`rules/style.md` states part of its final pass as searches, so a script can run
-that part:
+`scripts/style_lint.py` checks mechanical wording conventions. The default
+`strict` profile follows the documentation rules. The `conversation` profile
+permits perfect tense and treats sentence length, timing words, and repeated
+em dashes as review hints:
 
 ```bash
-python3 scripts/style_lint.py skills/clear-output-style/SKILL.md
-cat reply.md | python3 scripts/style_lint.py -
+python3 scripts/style_lint.py --profile conversation skills/clear-output-style/SKILL.md
+cat reply.md | python3 scripts/style_lint.py --profile conversation -
 git show HEAD:docs/guide.md > /tmp/before.md
 python3 scripts/style_lint.py --baseline /tmp/before.md docs/guide.md
 ```
@@ -119,7 +107,10 @@ python3 scripts/style_lint.py --baseline /tmp/before.md docs/guide.md
 The script needs Python 3 and nothing else. It reports the filler words, part of
 the signal-free vocabulary, `e.g.` and `i.e.`, `currently`, the perfect tense,
 and British spelling. It also reports `here`, `this`, or `link` as link text, a
-second em dash in a paragraph, and a sentence past 25 words.
+second em dash in a paragraph, and a sentence past 25 words. In the
+`conversation` profile, review hints print with `review:` and do not cause a
+failed check. Other findings still produce exit status 1. An unknown profile
+produces an error.
 
 `--baseline OLD NEW` reports what NEW adds to OLD, so an edit to a page that
 already breaks a rule is judged on the edit. A finding matches the baseline by
@@ -140,20 +131,26 @@ defects quotes the defects it names. A domain term that matches a banned word,
 such as `landscape` for a page orientation, goes in code font, which the script
 skips.
 
-The script cannot check the half that decides whether a reply works. That half
-needs a reader or a judge, and it asks four questions:
+The script cannot establish whether a reply works. A reader or judge checks
+the response against its request and evidence:
 
-- Does the answer lead?
-- Did you do the work you own?
-- Does the reply restate the state?
-- Can the reader run the next action?
+- Does the opening answer the actual request?
+- Does the reply cover every material part with enough reason to understand it?
+- Do the sentences connect, and does each detail help the reader?
+- Are claims supported and meaningful limits clear?
+- Does the reply stop when complete, with a next action only if needed?
+
+The [conversational evaluation](evaluations/clear-output-style/REVIEW.md)
+records a comparison with the previous checkpoint, the supplied cases, and
+the remaining behavioral limits. These evaluation files stay outside the skill
+so they do not become examples in the model's prompt.
 
 ## Layout
 
 Each skill is a directory holding `SKILL.md`, whose frontmatter carries the
 `name` and the `description` that decides when the skill loads. Material that
 belongs to one skill sits in its `references/`, which the skill reads only when
-it needs it. Only `technical-docs` has one. Material shared by every skill sits
+it needs it. Only `technical-docs` has one. Material shared by the documentation skills sits
 in `rules/`.
 
 ```
@@ -188,7 +185,7 @@ The rules in these skills come from six sources.
 | [ASD-STE100](https://asd-ste100.org) | AeroSpace and Defence Industries Association of Europe | ASD's own terms, free to download | Ambiguity control: one meaning per word, one action per sentence, short sentences. |
 | [i-have-adhd](https://github.com/ayghri/i-have-adhd) | Ayoub Ghriss | MIT | The output shape: answer first, numbered steps, state restated each turn, wins visible. |
 | [caveman](https://github.com/JuliusBrussee/caveman) | Julius Brussee | MIT (`skills/`) | The compressed mode for the half of the output no user reads. |
-| [attention-control](https://github.com/aaddrick/attention-control) | aaddrick | MIT | Three rules in `clear-output-style`: own the work you can finish, never invent a specific, and state the full reach of an irreversible action. |
+| [attention-control](https://github.com/aaddrick/attention-control) | aaddrick | MIT | Ownership and evidence in conversational reports. |
 
 This repository summarizes the Google style guide and ASD-STE100; it reproduces
 neither. No approved-word dictionary from ASD-STE100 appears here. Check text

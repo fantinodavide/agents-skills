@@ -1,0 +1,375 @@
+{
+  "date": "2026-09-08",
+  "checkpoint_commit": "f7ff634",
+  "candidate_sha256_utf8_lf": "90dace04cb0ded9a303dbc950ac9d8abf5ee50540b25995dfaf9ecdfd0c125dd",
+  "claude_code_version": "2.1.263",
+  "response_model": "claude-opus-5[1m]",
+  "method": "Skill body as system prompt; one isolated reply per case and style; safe mode; tools, MCP, skills, and session persistence disabled. Existing checkpoint replies reused across refinement rounds. No model or effort override.",
+  "assessment": "Manual, unblinded review by the authoring agent. Completion status records successful generation, not behavioral correctness.",
+  "results": [
+    {
+      "style": "checkpoint",
+      "case": "direct_answer",
+      "status": "success",
+      "error": false,
+      "reply": "No. The export name sets the downloaded filename only. The exported rows and the source data stay the same.",
+      "cost_usd": 0.053624,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.31
+    },
+    {
+      "style": "checkpoint",
+      "case": "causal_explanation",
+      "status": "success",
+      "error": false,
+      "reply": "The first request did not fail on the server. It succeeded, created a job, and then the reply got lost on the way back to you.\n\nHere is the sequence:\n\n1. Your client sent the request to the server.\n2. The server received it, created job one, and sent back a confirmation.\n3. The confirmation never arrived. Your client waited, gave up, and showed a failure.\n4. You retried. The server received a second request that looked new to it, so it created job two.\n\nYour client only knows whether an answer came back. It cannot tell \"the server never got my request\" apart from \"the server did the work and the answer was lost.\" Both look the same from your side: silence.\n\nThe server has the opposite blind spot. It sees two separate requests with nothing marking them as the same submission, so it treats each one as a new job. It has no memory that says \"I already did this one.\"\n\nThe usual fix is to give each submission an identifier that the client generates once and reuses on every retry. The server then stores that identifier with the job. On a repeat, it finds the identifier already used and returns the original job instead of creating another. This is called an idempotency key.\n\nWithout that key, every retry after a lost reply risks a duplicate. If your server does not support one, the alternatives are to check for an existing job before retrying, or to clean up duplicates after the fact.",
+      "cost_usd": 0.0174495,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 9.08
+    },
+    {
+      "style": "checkpoint",
+      "case": "multipart_decision",
+      "status": "success",
+      "error": false,
+      "reply": "Move exports to the queue. A 40-second export cannot finish inside a 30-second gateway timeout, so the request stays in the web path only if you cut the work below 30 seconds, which nothing here suggests you can.\n\n## The trade-off\n\nStaying in the request keeps one code path and no new storage, and every export fails at the gateway. Moving to the queue costs a job status table, a worker, and a second UI state, and it removes the timeout as a constraint. It also lets a slow export run long without holding a web worker.\n\n## Failure behavior\n\nA worker crash or a storage error marks the job failed and eligible for retry. Retry is where duplicates appear: the first attempt may have written the file before it failed. Two ways to prevent a duplicate publish:\n\n1. Write to a temporary path, then move to the final path as the last step. A retry overwrites the temporary file and the move is the only publish.\n2. Derive the final path from a key the retry reproduces, such as the job ID, so the second attempt writes the same object rather than a new one.\n\nOption 1 is the safer default because it does not depend on the storage backend treating a repeated write as idempotent.\n\n## What the interface shows\n\n- **Queued:** the request returned, the export has not started. Show the job exists, no progress bar.\n- **Running:** started, with the start time.\n- **Done:** a download link to the published file.\n- **Failed:** the failure reason and a retry control, or a note that a retry is already scheduled.\n\nThe user needs the job ID or a status URL from the initial response so a page reload does not lose the export.\n\n## Open question\n\nHow long do finished jobs and their files stay available? That decides whether the status table needs an expiry column and whether the download link can be permanent.",
+      "cost_usd": 0.0222175,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 12.39
+    },
+    {
+      "style": "checkpoint",
+      "case": "completion_with_limit",
+      "status": "success",
+      "error": false,
+      "reply": "Done on Linux. The watcher now handles paths with spaces, and the tests pass for paths with and without them.\n\nWindows is untested: I had no Windows host, and the path quoting differs there. Run the same test file on Windows before you call the fix complete.",
+      "cost_usd": 0.0097985,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.84
+    },
+    {
+      "style": "checkpoint",
+      "case": "diagnostic_uncertainty",
+      "status": "success",
+      "error": false,
+      "reply": "I can't tell yet. Low CPU with slow responses means the service is waiting on something, but the database is only one of the candidates.\n\nWaiting also fits:\n\n1. An exhausted connection pool or thread pool, where requests queue before any query runs.\n2. A slow upstream HTTP call or DNS lookup.\n3. Lock contention or a blocking call inside the service itself.\n4. Disk or network I/O unrelated to the database.\n5. Garbage collection pauses, which can show low average CPU.\n\nWhat would settle it, cheapest first:\n\n1. Time one slow request end to end and record how much of it sits inside database calls. A single log line around the query is enough.\n2. Read the database's own slow query log or `pg_stat_activity` equivalent. If the database sees no slow queries, the wait is elsewhere.\n3. Check pool saturation: connections in use against the pool maximum at the moment of a slow response.\n\nIf you tell me the stack and where the service runs, I can name the specific commands for steps 2 and 3.",
+      "cost_usd": 0.016143499999999998,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 7.55
+    },
+    {
+      "style": "checkpoint",
+      "case": "correction",
+      "status": "success",
+      "error": false,
+      "reply": "You are right, and my earlier answer was wrong. The handler reads the setting on each request, so a change takes effect on the next request with no restart.\n\nI based the restart claim on a startup read I assumed from the config loader, and I did not check the call site before answering. The code you supplied settles it.\n\nOne thing to confirm before you rely on it: whether the read hits the file each time or a cached value with its own refresh interval. If it goes through a cache, the delay is that interval, not zero. Point me at the accessor and I will check.",
+      "cost_usd": 0.011594499999999997,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 4.95
+    },
+    {
+      "style": "checkpoint",
+      "case": "focused_followup",
+      "status": "success",
+      "error": false,
+      "reply": "Deleting a document removes it from search immediately, without waiting for the next indexing cycle.",
+      "cost_usd": 0.0081925,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.81
+    },
+    {
+      "style": "checkpoint",
+      "case": "progress_update",
+      "status": "success",
+      "error": false,
+      "reply": "The handler sends the right value, and the database stores it. So the bug is on the way back: either the response carries the old value, or the interface keeps its local copy and ignores the response.\n\nNext: save a setting with the network tab open, then compare the value in the response body against the value shown on screen. If they match, the interface is reusing local state; if the response holds the old value, the read path after the write is the problem.",
+      "cost_usd": 0.0105565,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 4.12
+    },
+    {
+      "style": "checkpoint",
+      "case": "holdout_missing_verification",
+      "status": "success",
+      "error": false,
+      "reply": "The upload validation fix is in place and the unit tests pass.\n\nNo end-to-end upload test was run, so the fix is unverified against a real upload. Next: run the end-to-end upload suite, or upload a file that previously failed validation, and confirm it is accepted.",
+      "cost_usd": 0.0097075,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.91
+    },
+    {
+      "style": "checkpoint",
+      "case": "holdout_behavior_boundary",
+      "status": "success",
+      "error": false,
+      "reply": "Yes, from the default list view. Archiving hides the item there.\n\nWhether the item still exists in storage, and whether a filter or search still returns it, I have not checked. The archive handler and the list query settle both. Point me at the file or tell me the repo, and I will read it.",
+      "cost_usd": 0.010114499999999998,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 4.26
+    },
+    {
+      "style": "checkpoint",
+      "case": "holdout_brief_correction",
+      "status": "success",
+      "error": false,
+      "reply": "You are right: the export uses the account's configured time zone, not UTC. The fixture settles it, and my earlier statement was wrong. I do not know why I said UTC; I did not check the fixture before answering.\n\nAnything I said that followed from the UTC claim needs rechecking, including any offset arithmetic or comparison against timestamps from another source.\n\nTell me which part you want corrected first, or point me at the export code and I will read it and report what it does with the time zone.",
+      "cost_usd": 0.0138505,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 6.59
+    },
+    {
+      "style": "checkpoint",
+      "case": "holdout_requested_depth",
+      "status": "success",
+      "error": false,
+      "reply": "## The rule\n\nThe version number turns a save into a conditional write. A save carries the version the editor loaded, and the server compares it with the version stored on the record. A match means nobody wrote to the record since that load, so the save proceeds and the version increments. A mismatch means somebody wrote in between, so the server refuses and leaves the record as it stands.\n\nThe overwrite this prevents is the silent one. Without the check, the second save writes over the first, and both editors see a successful save. With the check, the second editor learns that the record moved before their write lands.\n\n## Example\n\nTwo editors, Ana and Ben, open record 7 at version 4.\n\n1. Ana loads the record. Her client holds version 4.\n2. Ben loads the same record. His client holds version 4.\n3. Ana edits the summary field and saves. Her request carries version 4, the stored version is 4, so the server writes her change and sets the version to 5.\n4. Ben edits the owner field and saves. His request carries version 4, the stored version is 5, so the server refuses and returns a conflict response. Record 7 keeps Ana's summary and stays at version 5.\n5. Ben's client still holds his edit to the owner field. Nothing on the server has it.\n\nStep 4 is the whole mechanism. Ben's request describes a record that no longer exists, and the server declines to guess what he meant.\n\n## After a conflict\n\nThe client owns two things at that moment: an edit the server rejected, and a stale copy of the record. The interface has to keep the first and replace the second.\n\n1. Keep the draft in the editor. The conflict response says the write failed, and a client that clears the form at this point loses work the server never stored.\n2. Fetch the current record and its new version.\n3. Show the editor what changed underneath them. Ben needs to see that the summary now reads differently and that his own field, the owner, is untouched.\n4. Offer a resolution. Where the two edits touch different fields, the interface can offer to apply Ben's field on top of the fresh record. Where they touch the same field, the editor picks between the two values, or merges them by hand.\n5. Retry with the new version number. The retry carries version 5, matches, and increments to 6.\n\nStep 5 can conflict again if a third editor saves in the meantime, so the retry runs through the same path rather than around it.\n\n## What the design does not give you\n\nThe check protects a single record write. It says nothing about two records that have to change together, and it does not merge anything: it reports the collision and hands the decision back.\n\nThe failure mode left in the design is step 1. A client that discards the draft after a conflict loses the edit with no copy anywhere, and the loss is invisible to the server, which recorded a refusal and nothing else. Where drafts matter, persist the pending edit locally before the save request goes out, and clear it only after the server confirms the write.",
+      "cost_usd": 0.0379765,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 20.69
+    },
+    {
+      "style": "candidate",
+      "case": "direct_answer",
+      "status": "success",
+      "error": false,
+      "reply": "No. The export name only sets the filename of the downloaded file — the exported rows and the source data stay the same.",
+      "cost_usd": 0.040109,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.05
+    },
+    {
+      "style": "candidate",
+      "case": "causal_explanation",
+      "status": "success",
+      "error": false,
+      "reply": "Because the first request didn't actually fail on the server's side — only the reply got lost on the way back to you.\n\nThink of it like mailing an order form. The server received your form, created the job, and mailed back a confirmation. That confirmation never arrived. From your side it looks identical to the form never being delivered, so the client reported a failed request. But the job was already made.\n\nWhen you retried, you sent a second order form. The server has no way to tell that it's a repeat of the first one — it treats every submission as new — so it created a second job. Now you have two.\n\nThe usual fix is to give each submission an identifier that stays the same across retries, so the server can recognize the second form as a duplicate of the first and return the original job instead of creating another one.",
+      "cost_usd": 0.045503,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 5.31
+    },
+    {
+      "style": "candidate",
+      "case": "multipart_decision",
+      "status": "success",
+      "error": false,
+      "reply": "Move exports to the queue. At around 40 seconds against a 30-second gateway timeout, the request can't finish, so the synchronous path fails by design rather than under load.\n\n**The trade-off.** Staying in the request keeps the code simple: one handler, no job storage, and the file is available the moment the call returns. But that path can't work here, so the real question is what the queue costs. You take on job status storage, a second place where things can fail, and a user experience that no longer ends with the file in hand. In exchange, exports stop being bounded by the gateway, and a slow export becomes a slow job instead of an error.\n\n**On failure.** A failed job retries, which means the export can run more than once for the same request. Since repeated attempts must not publish duplicate files, retries need to be safe to repeat: derive the destination from something stable about the request rather than the attempt, and make the final publish the step that either replaces the same target or refuses to write a second one. Do the work to a temporary location and publish once at the end, so a job that dies mid-export leaves nothing partially visible. When retries are exhausted, the job needs a terminal failed state with a reason the interface can show.\n\n**What the interface needs.** The request now returns a job identifier instead of a file, so the UI has to represent four states: queued, running, finished with a download link, and failed with a reason and a way to retry. Because the user leaves and comes back, status has to be readable from the job record rather than held in the page, and a re-request for an export already in flight should show the existing job instead of starting a second one.\n\nThe main thing to settle before implementing is how a job's identity is derived, since that decision determines both duplicate suppression and how the UI reattaches to a running export.",
+      "cost_usd": 0.020863,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 10.97
+    },
+    {
+      "style": "candidate",
+      "case": "completion_with_limit",
+      "status": "success",
+      "error": false,
+      "reply": "Yes, on Linux. The watcher now handles paths with spaces, and the tests covering paths with and without spaces pass. Windows is untested, so that behavior is still unverified.",
+      "cost_usd": 0.008173999999999999,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.97
+    },
+    {
+      "style": "candidate",
+      "case": "diagnostic_uncertainty",
+      "status": "success",
+      "error": false,
+      "reply": "Not necessarily. Low CPU with slow responses tells you the service is spending its time waiting rather than computing, but it doesn't say what it's waiting on. The database is one candidate; so are outbound calls to other services, lock or connection-pool contention, and slow disk or network I/O.\n\nRight now there's nothing to distinguish those, since there are no request traces, database timings, or network timings. Per-request timing broken down by phase would separate them: if the wait sits in query execution, the database is implicated; if requests queue before any query runs, the bottleneck is upstream of it, likely pool or thread exhaustion.",
+      "cost_usd": 0.012349,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 5.81
+    },
+    {
+      "style": "candidate",
+      "case": "correction",
+      "status": "success",
+      "error": false,
+      "reply": "You're right, and I was wrong. The handler reads the setting on each request, so your change takes effect on the next request without a restart.",
+      "cost_usd": 0.007865,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.89
+    },
+    {
+      "style": "candidate",
+      "case": "focused_followup",
+      "status": "success",
+      "error": false,
+      "reply": "Deletions apply immediately — a deleted document drops out of search right away, without waiting for the next indexing cycle.",
+      "cost_usd": 0.0071129999999999995,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.67
+    },
+    {
+      "style": "candidate",
+      "case": "progress_update",
+      "status": "success",
+      "error": false,
+      "reply": "Yes, I've narrowed it down. The handler sends the correct value and the database stores it, so the bug is downstream of the save itself.\n\nWhat's still open is whether the server's response carries the old value or the interface just keeps showing its local copy. My next check compares the response body against what's displayed, which should separate those two cases.",
+      "cost_usd": 0.009452,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.89
+    },
+    {
+      "style": "candidate",
+      "case": "holdout_missing_verification",
+      "status": "success",
+      "error": false,
+      "reply": "The upload validation fix is done, and the unit tests pass. The end-to-end upload test wasn't run, so that path remains unverified.",
+      "cost_usd": 0.008022999999999999,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.01
+    },
+    {
+      "style": "candidate",
+      "case": "holdout_behavior_boundary",
+      "status": "success",
+      "error": false,
+      "reply": "Archiving hides the item from your default list, so it won't show up there anymore. It isn't a delete in the sense of losing the item — it just drops out of that view.\n\nI don't know how archived items are stored behind the scenes, so I can't tell you where they end up or how to get back to them from here.",
+      "cost_usd": 0.009030000000000002,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.44
+    },
+    {
+      "style": "candidate",
+      "case": "holdout_brief_correction",
+      "status": "success",
+      "error": false,
+      "reply": "You're right, and I was wrong. The export uses the account's configured time zone, not UTC. I don't know why I stated otherwise.",
+      "cost_usd": 0.007306,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.62
+    },
+    {
+      "style": "candidate",
+      "case": "holdout_requested_depth",
+      "status": "success",
+      "error": false,
+      "reply": "The protection comes from the version number acting as a claim about what the editor was looking at when they made their change. The server doesn't ask \"is this edit valid?\" — it asks \"is this edit based on the current record?\" A save carrying an old version proves the editor didn't see someone else's intervening change, so the server rejects it rather than writing over work the editor never read.\n\n## A worked example\n\nBoth editors open record 42 at version 7.\n\n1. Editor A saves first. Their request carries version 7, which matches the current record, so the server accepts the write and the record moves to version 8.\n2. Editor B saves next, still carrying version 7. The current version is now 8, so the versions don't match and the server returns a conflict.\n3. The record still holds A's change. B's save had no effect on the stored data.\n\nThe important part of step 3 is that the rejection is total, not partial. B's edit isn't merged, queued, or applied to any subset of fields. Nothing about A's save is disturbed. Whatever B intended to write still exists only in B's client, which is exactly where the risk moves next.\n\n## What the interface should do after a conflict\n\nThe conflict response protects the server's copy, but it says nothing about the draft sitting in B's browser. If the client reacts by reloading the record, B's unsaved text is gone — the data stayed consistent and the editor still lost their work. So the interface has one hard requirement and a few sensible behaviors around it.\n\n**The requirement: keep the draft.** Never discard B's edited values in response to a conflict. Hold them in the client until B decides what happens to them.\n\nBeyond that:\n\n- **Tell B what actually happened.** Something like \"This record was changed by someone else while you were editing\" is more useful than a generic save failure, because it explains why retrying the same request won't help.\n- **Show them the difference.** B needs to see the current stored values next to their own so they can judge whether their change still makes sense, was already made by A, or conflicts with A's intent.\n- **Give them an explicit choice.** Reapply their draft on top of the current version, take the stored version and abandon their draft, or merge the two by hand. Each option is defensible depending on what A changed; the client can't decide for B.\n\nIf B chooses to reapply, the client saves again using the *new* version number it received from the server, not the stale 7. That save then succeeds under the same rule that rejected the first one — B is now editing from the record as it currently stands, which is the condition the whole mechanism is checking for.",
+      "cost_usd": 0.027396999999999998,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 16.58
+    },
+    {
+      "style": "candidate",
+      "case": "final_holdout_focused_explanation",
+      "status": "success",
+      "error": false,
+      "reply": "The chart shows only completed weeks, and the current week is still in progress, so it's excluded by design. Nothing is missing from storage — this week's data will appear once the week closes.",
+      "cost_usd": 0.007784,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.84
+    },
+    {
+      "style": "candidate",
+      "case": "final_holdout_unperformed_check",
+      "status": "success",
+      "error": false,
+      "reply": "Request validation is fixed, and the smoke test passes. No load test was run, so behavior under load is unverified.",
+      "cost_usd": 0.007631,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.89
+    },
+    {
+      "style": "checkpoint",
+      "case": "final_holdout_focused_explanation",
+      "status": "success",
+      "error": false,
+      "reply": "The chart shows only completed weeks, and this week is still in progress, so it has no bar yet. Its data is in storage and will appear once the week closes.",
+      "cost_usd": 0.0082635,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 2.95
+    },
+    {
+      "style": "checkpoint",
+      "case": "final_holdout_unperformed_check",
+      "status": "success",
+      "error": false,
+      "reply": "Request validation is fixed, and the smoke test passes.\n\nNo load test was run, so the behavior under concurrent traffic is unchecked. I have no tools left to run one.\n\nNext: run the load test before this ships.",
+      "cost_usd": 0.0088905,
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "elapsed_seconds": 3.27
+    }
+  ]
+}

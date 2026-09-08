@@ -1,11 +1,10 @@
 # The shared rule set
 
-The rules every skill in this repository applies, merged from The Elements of
+The rules for `technical-docs` and `todo-list`, merged from The Elements of
 Style, the Google developer documentation style guide, and ASD-STE100. The goal
 is the fewest words that leave out nothing the reader needs. Each skill adds
-its person, mood, and shape. A skill read as one file carries copies of these
-sections between `<!-- rules: -->` and `<!-- /rules -->` markers, and
-`scripts/sync_rules.py` keeps them equal to this file.
+its person, mood, and shape. `clear-output-style` carries its own conversational
+rules and does not import these requirements.
 
 ## Read the source first
 
@@ -127,7 +126,6 @@ long it survives. Flat voice: no "Uh oh", no apology.
 |---|---|---|
 | `technical-docs` | Indicative; imperative only inside a numbered procedure | The system is the subject; no `you` |
 | `todo-list` | Imperative in every line | The reader performs the lines and is never named |
-| `clear-output-style` | Imperative for what the reader performs | `you`, wherever the sentence is about the reader |
 
 Where the reader is not named, a language with an impersonal form uses it:
 Italian `si esegue` or `va eseguito`, never `esegui`.

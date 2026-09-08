@@ -1,37 +1,4 @@
 #!/usr/bin/env python3
-"""Check text against the mechanical rules in clear-output-style.
-
-The rules this script covers are the ones the "Before you send" section states as
-searches. The rules it cannot cover need a reader: whether the answer leads, whether
-the work was owned, whether a next action is runnable.
-
-Usage:
-    python3 scripts/style_lint.py [--search] FILE [FILE ...]
-    python3 scripts/style_lint.py [--search] --baseline OLD NEW
-    cat reply.md | python3 scripts/style_lint.py -
-    python3 scripts/style_lint.py --selftest
-
-A finding prints as `path:line: rule: message`. The exit status is 1 when a file has
-an error finding, and 0 when it has none. `--search` adds the checks a reader has to
-settle, and a search finding never changes the exit status. Two checks sit there: the
-passive, which the style allows where the actor is unknown, and the gerund at a clause
-end, which the pattern cannot tell from a noun.
-
-`--baseline OLD NEW` reports what NEW adds to OLD, so an edit to a file that already
-has findings is judged on the edit alone. A finding matches the baseline by rule and
-message, never by line number, which moves as text is inserted above it. A rule the
-baseline breaks twice stays quiet until a third break appears. `git show HEAD:path`
-writes the baseline for a file under review.
-
-Sentence length and the em dash count run over a paragraph rather than a line, because
-the markdown here wraps one sentence across several lines. A blank line, a fence, a
-heading, a table row, and a new list item each end a paragraph, and a heading or a
-table row stands as a paragraph of its own.
-
-A line ending in `<!-- style-lint: ignore -->` is skipped, and so is every line under
-a `<!-- style-lint: ignore-block -->` comment until the next blank line. The rule
-inventories in the style files need it, because they quote the words they ban.
-"""
 
 import bisect
 import re
@@ -157,6 +124,10 @@ SEARCH_RULES = [
 ]
 
 SEARCH_RULE_NAMES = {name for name, _, _ in SEARCH_RULES}
+PROFILE_REVIEW_RULES = {
+    "strict": SEARCH_RULE_NAMES,
+    "conversation": SEARCH_RULE_NAMES | {"length", "timing", "em-dash"},
+}
 
 
 def strip_code_spans(line):
@@ -233,12 +204,16 @@ def body_start(lines):
     return 0
 
 
-def check(text, path="-", searches=False):
+def check(text, path="-", searches=False, profile="strict"):
+    if profile not in PROFILE_REVIEW_RULES:
+        raise ValueError("profile must be strict or conversation")
     findings = []
     paragraph = []
     in_fence = False
     in_ignore_block = False
     rules = PROSE_RULES + (SEARCH_RULES if searches else [])
+    if profile == "conversation":
+        rules = [rule for rule in rules if rule[0] != "perfect"]
 
     def flush():
         findings.extend(paragraph_findings(paragraph, path))
@@ -346,6 +321,23 @@ def selftest():
         ["new.md"],
     )
     assert take_path(["new.md"], "--baseline") == (None, ["new.md"])
+    uncertainty = "I have not tested the Windows build."
+    assert check(uncertainty, profile="conversation") == []
+    assert lint_exit_code(check(uncertainty), "strict") == 1
+    assert lint_exit_code(check(long_one, profile="conversation"), "conversation") == 0
+    assert lint_exit_code(check(long_one), "strict") == 1
+    assert lint_exit_code(check("We just did it.", profile="conversation"), "conversation") == 1
+    assert lint_exit_code(check("The rows are skipped.", searches=True), "strict") == 0
+    mixed = check(long_one + "\n\nWe just did it.", profile="conversation")
+    assert lint_exit_code(mixed, "conversation") == 1
+    revised = check(uncertainty + "\n\n" + long_one, profile="conversation")
+    assert rules_of_added(revised, check(uncertainty, profile="conversation")) == ["length"]
+    try:
+        check("Done.", profile="conversaton")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("unknown profiles must fail")
     print("selftest ok")
 
 
@@ -365,12 +357,11 @@ def added(findings, baseline):
 
 
 def take_path(argv, flag):
-    """Pulls `flag` and the path after it out of argv."""
     if flag not in argv:
         return None, argv
     at = argv.index(flag)
-    if at + 1 >= len(argv):
-        raise SystemExit("%s names the file to compare against" % flag)
+    if at + 1 >= len(argv) or argv[at + 1].startswith("--"):
+        raise SystemExit("%s requires a value" % flag)
     return argv[at + 1], argv[:at] + argv[at + 2:]
 
 
@@ -384,10 +375,19 @@ def read_source(path):
         raise SystemExit("%s: cannot read: %s" % (path, failure.strerror))
 
 
+def lint_exit_code(findings, profile):
+    review_rules = PROFILE_REVIEW_RULES[profile]
+    return int(any(name not in review_rules for _, _, name, _ in findings))
+
+
 def main(argv):
     if "--selftest" in argv:
         selftest()
         return 0
+    profile, argv = take_path(argv, "--profile")
+    profile = profile or "strict"
+    if profile not in PROFILE_REVIEW_RULES:
+        raise SystemExit("--profile must be strict or conversation")
     baseline, argv = take_path(argv, "--baseline")
     searches = "--search" in argv
     paths = [a for a in argv if not a.startswith("-")] or ["-"]
@@ -395,13 +395,17 @@ def main(argv):
         raise SystemExit("--baseline compares one file against one file")
     findings = []
     for path in paths:
-        findings += check(read_source(path), path, searches)
+        findings += check(read_source(path), path, searches, profile)
     if baseline:
-        findings = added(findings, check(read_source(baseline), baseline, searches))
+        findings = added(findings, check(read_source(baseline), baseline, searches, profile))
     for path, number, name, message in findings:
+        if profile == "conversation" and name == "length":
+            message = message.replace("split it", "review clarity")
+        if profile == "conversation" and name in PROFILE_REVIEW_RULES[profile]:
+            message = "review: " + message
         print("%s:%d: %s: %s" % (path, number, name, message))
     print("%d finding(s)" % len(findings), file=sys.stderr)
-    return 1 if any(name not in SEARCH_RULE_NAMES for _, _, name, _ in findings) else 0
+    return lint_exit_code(findings, profile)
 
 
 if __name__ == "__main__":
