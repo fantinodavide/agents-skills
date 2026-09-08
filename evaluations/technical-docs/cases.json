@@ -1,0 +1,50 @@
+[
+  {
+    "id": "recommendation_not_enforcement",
+    "context": "This complete fixture has no wrappers or additional path checks. Deployment guidance recommends keeping profiles in config/ for organization. Existing prose says: 'The loader rejects profiles stored in uploads/'.",
+    "user": "Correct this paragraph against the implementation. Explain the recommended location and what the loader actually accepts.",
+    "criteria": "Separate recommended directory organization from runtime acceptance. Do not invent a forbidden directory, a security rationale, or an enforcement error. Validity and readability remain necessary."
+  },
+  {
+    "id": "defaults_and_zero",
+    "context": "This is a reference for operators who edit the profile file and call reload through their host integration. The requested section concerns refresh_seconds only.",
+    "user": "Document refresh_seconds, including omission, zero, invalid values, when edits apply, and examples for the default and disabled forms.",
+    "criteria": "State 30 seconds on omission, zero disabling automatic refresh, positive integers, rejection of negative/null/string/boolean values, and explicit reload timing. Show both requested valid JSON examples without imposing one example per option."
+  },
+  {
+    "id": "failed_reload",
+    "context": "The panel started with refresh_seconds set to 15. The file was changed to -1, and reload returned false. The complete fixture is the only implementation involved.",
+    "user": "Write a troubleshooting section for the failed reload. Explain what remains active, what happens to the file, and how to recover.",
+    "criteria": "Quote the exact validation error. Preserve the active value 15, distinguish unchanged active state from the still-invalid disk file, and explain correcting the file then reloading. Do not claim file rollback, retries, or loss of the working configuration."
+  },
+  {
+    "id": "panel_audience",
+    "context": "The end-user interface exposes a Reload profile button that calls reload and displays last_error. Only operators can edit the profile or run host commands. Panel users have no terminal or file access.",
+    "user": "Write a short panel help section explaining Reload profile and what a validation failure means for the user.",
+    "criteria": "Explain reload and preserved working settings. Route invalid-file correction to an operator. Do not give the panel user Python commands, file edits, or unsupported controls."
+  },
+  {
+    "id": "validation_procedure",
+    "context": "The operator is in the directory containing panel_fixture.py and candidate.json. Python 3 is available. The requested task is validation only; no process restart or application step is authorized or needed.",
+    "user": "Write a procedure to validate candidate.json with this CLI. Include how to recognize success or failure and whether validation changes the file or running panel.",
+    "criteria": "Give python panel_fixture.py validate candidate.json, Profile valid with exit 0, error output with exit 1, and no mutation or application. Use numbered steps where useful; do not invent an apply command or restart."
+  },
+  {
+    "id": "existing_page_update",
+    "context": "Existing page: '# Status panel\n\nThe panel reads profile.json at startup.\n\n## Refresh\n\nrefresh_seconds must be positive. An omitted value disables automatic refresh. Editing the file changes the running panel immediately.\n\n## Support\n\nSend the displayed error to the operator.' Preserve accurate surrounding content.",
+    "user": "Update this page against the implementation. Keep it brief and include valid JSON examples for omission and zero.",
+    "criteria": "Correct all three false refresh statements, preserve the accurate startup/support content, include both valid forms, and avoid padding each section to three sentences."
+  },
+  {
+    "id": "heldout_startup_failure",
+    "context": "This is the first attempt to construct StatusPanel. The profile contains refresh_seconds set to -1. No panel instance exists yet.",
+    "user": "Write one concise troubleshooting paragraph explaining this startup failure and the required correction.",
+    "criteria": "Explain constructor validation failure and correction to a non-negative integer or omission before trying construction again. Do not claim that a previous profile survives, that reload is available on a failed instance, or that invalid values fall back to 30."
+  },
+  {
+    "id": "heldout_predicate_api",
+    "context": "This is a brief API reference entry for a caller of refresh_due(elapsed_seconds).",
+    "user": "Document what refresh_due returns and whether calling it refreshes data or resets the elapsed time.",
+    "criteria": "State the enabled-and-elapsed-at-least-interval condition, false for disabled refresh, and absence of data fetching or timer-reset side effects. Do not invent a scheduler or mutation."
+  }
+]

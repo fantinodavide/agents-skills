@@ -127,6 +127,7 @@ SEARCH_RULE_NAMES = {name for name, _, _ in SEARCH_RULES}
 PROFILE_REVIEW_RULES = {
     "strict": SEARCH_RULE_NAMES,
     "conversation": SEARCH_RULE_NAMES | {"length", "timing", "em-dash"},
+    "documentation": SEARCH_RULE_NAMES | {"length", "timing", "em-dash", "perfect"},
 }
 
 
@@ -206,7 +207,7 @@ def body_start(lines):
 
 def check(text, path="-", searches=False, profile="strict"):
     if profile not in PROFILE_REVIEW_RULES:
-        raise ValueError("profile must be strict or conversation")
+        raise ValueError("profile must be strict, conversation, or documentation")
     findings = []
     paragraph = []
     in_fence = False
@@ -324,6 +325,9 @@ def selftest():
     uncertainty = "I have not tested the Windows build."
     assert check(uncertainty, profile="conversation") == []
     assert lint_exit_code(check(uncertainty), "strict") == 1
+    assert lint_exit_code(check(uncertainty, profile="documentation"), "documentation") == 0
+    assert lint_exit_code(check(long_one, profile="documentation"), "documentation") == 0
+    assert lint_exit_code(check("We just did it.", profile="documentation"), "documentation") == 1
     assert lint_exit_code(check(long_one, profile="conversation"), "conversation") == 0
     assert lint_exit_code(check(long_one), "strict") == 1
     assert lint_exit_code(check("We just did it.", profile="conversation"), "conversation") == 1
@@ -387,7 +391,7 @@ def main(argv):
     profile, argv = take_path(argv, "--profile")
     profile = profile or "strict"
     if profile not in PROFILE_REVIEW_RULES:
-        raise SystemExit("--profile must be strict or conversation")
+        raise SystemExit("--profile must be strict, conversation, or documentation")
     baseline, argv = take_path(argv, "--baseline")
     searches = "--search" in argv
     paths = [a for a in argv if not a.startswith("-")] or ["-"]
@@ -399,9 +403,9 @@ def main(argv):
     if baseline:
         findings = added(findings, check(read_source(baseline), baseline, searches, profile))
     for path, number, name, message in findings:
-        if profile == "conversation" and name == "length":
+        if profile != "strict" and name == "length":
             message = message.replace("split it", "review clarity")
-        if profile == "conversation" and name in PROFILE_REVIEW_RULES[profile]:
+        if profile != "strict" and name in PROFILE_REVIEW_RULES[profile]:
             message = "review: " + message
         print("%s:%d: %s: %s" % (path, number, name, message))
     print("%d finding(s)" % len(findings), file=sys.stderr)

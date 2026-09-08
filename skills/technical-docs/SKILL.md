@@ -1,125 +1,125 @@
 ---
 name: technical-docs
-description: Write technical documentation for a system you built — a config file, a panel feature, a CLI, an API, a service someone else operates. Use for a knowledgebase article, a user guide, a README section, or docs for a feature that was just implemented. Triggers include "write a guide", "document this", "knowledgebase article", "user docs", "explain how to use". Not for internal design notes or code comments.
+description: Write or update concise technical documentation from verified behavior. Use for configuration references, user guides, README sections, API or CLI documentation, and troubleshooting. Keep the facts needed for the reader's task, with no storytelling. Not for internal design notes, code comments, or standalone todo lists.
 ---
 
 # Technical documentation
 
-What a system does and which parts of it the reader controls. Not a task
-list, not a tour of the implementation, not the decision record. The reader
-holds a goal and asks which setting gets them there, and what happens if they
-get it wrong.
+Write the shortest complete documentation for the requested task. State the
+behavior directly, with the facts needed to use it correctly. Include a reason
+or consequence only when it changes a choice or prevents a likely mistake.
 
-`${CLAUDE_PLUGIN_ROOT}/rules/style.md` governs every sentence; read the whole
-file before drafting. "Read the source first", "Examples", and "Errors and
-output" cost the most here. Mood and person are set below.
+Keep technical docs very concise. Omit storytelling, analogies, rhetorical
+questions, author commentary, and implementation history. A small setting or
+action usually needs a few sentences or a compact table. Requested detail and
+necessary distinctions justify more space; available source material does not.
 
-## Describe the system, don't command the reader
+These instructions govern the document. Conversation with the user follows
+the conversational style. Documenting a system does not authorize changing it.
 
-The reader decides. The text says what the system does and what each setting
-means:
+## Keep the requested scope
 
-| Instead of | Write |
+Identify the audience and the task from the request and surrounding page.
+Include only the actions available to that audience. An operator can need host
+commands; a panel user can need only panel actions.
+
+A paragraph replacement returns a paragraph. A short help section explains
+the control, its result, and any failure the reader must handle. Source files
+verify those claims; they do not define the document's table of contents.
+Leave helper names, validation commands, error catalogs, and adjacent features
+out unless the requested task needs them.
+
+For example, given a button that pauses scheduled imports, lets the current
+import finish, and requires an administrator to resume, this is complete:
+
+> **Pause imports** stops new imports. The current import finishes.
+> An administrator can resume scheduled imports.
+
+## Verify the claims
+
+Read the inputs, defaults, validation, consumers, and failure paths relevant to
+the requested topic. A name, comment, or plausible design is not proof of
+behavior. Trace each claimed effect through the operation that produces it.
+Reading settings does not establish that displayed data refreshes; a condition
+that reports whether work is due does not establish that the work runs.
+
+Keep these distinctions explicit when they matter:
+
+- Enforced constraint: the implementation rejects, changes, or prevents an input.
+- Documented requirement: the supported workflow requires something, even if
+  the implementation does not check it.
+- Recommendation: guidance favors a choice without claiming alternatives fail.
+
+A rewrite preserves meaning. Advice to store files in a particular directory
+does not prove that the loader rejects other directories. Automatic behavior
+does not prove the developer's reason for it.
+
+Bound claims to the source examined. An absent check in one function does not
+prove that callers omit it. Preserve relevant uncertainty without inventing
+defaults, enforcement, side effects, or recovery guarantees. Put material source
+discrepancies in the handoff; keep unrelated unknowns out of the document.
+
+## Choose the necessary facts and form
+
+Select the facts that answer the requested question: relevant defaults, units,
+allowed values, omitted or zero values, activation, persistence, and failure
+state. These are possible details, not a checklist to fill in every section.
+
+| Document | Include |
 |---|---|
-| Open Files, select `auth.json`, save, and restart. | The server reads `auth.json` at every start, so a change takes effect at the next restart. |
-| Set `cookie_secret` to a random string. | `cookie_secret` signs sessions. Left out, each start invents a new one, and everyone signed in signs out. |
-| Don't put the file in `data/`. | The server refuses a config in `data/`, because the reader can write there. |
+| Reference | The behavior and values needed to choose an input or call an operation. |
+| Explanation | The mechanism and consequences needed to answer the stated question. |
+| Procedure | Necessary prerequisites, ordered actions, and a check of the result. |
+| Troubleshooting | The symptom, its supported cause, the state left behind, and the correction. |
 
-The imperative fits only a sequence performed in order, such as registering an
-application at a third party. `references/rewrites.md` holds more pairs.
+Use a paragraph for one point, a table for comparable values, and numbered
+steps for a sequence. Add headings only when they help navigation. State each
+fact once: a table needs no prose that repeats its rows, and a complete section
+needs no recap. Do not pad sections to a sentence count.
 
-## Keep the reader out of the sentence
+Use the system, setting, file, or operation as the subject of explanatory prose.
+Use present tense for behavior, without `you` or `your`. Numbered procedures
+use imperative actions. Italian prose uses impersonal forms such as `si esegue`
+or `va eseguito`. Describe automatic actions as automatic; include an operator
+override only when it exists and belongs to the task.
 
-The subject is the system, the file, or the setting. No `you`, and no
-instruction outside a numbered procedure. The same sentence then serves the
-operator, the auditor, and the reader a year later.
+## Examples and errors
 
-| Addressing the reader | Describing the system |
-|---|---|
-| Use `seed.sh` to set up a new environment. | `seed.sh` loads the fixtures into an empty database. |
-| Change the value in `credentials` and run the script again. | A new value in `credentials` takes effect at the next run with `ON_CONFLICT=replace`. |
-| You can point it at another instance with `DB_URL`. | `DB_URL` names the instance the script configures. |
+Give the smallest complete example that demonstrates the requested behavior.
+Show contrasting forms when requested or needed to distinguish their effects.
+An example of omission omits the setting; an explicit default illustrates a
+different form. Extra collection entries belong only when they clarify the shape.
 
-Italian uses `si esegue` or `va eseguito`, never `esegui`.
+Keep syntax and names consistent with the implementation. Identify necessary
+deployment placeholders. Use only supported secret references. Commands must
+match the stated environment; avoid shell-specific verification steps when
+the environment is unspecified.
 
-## Document what the reader controls
+Copy relevant errors exactly. Describe the failure state and supported recovery
+without implying rollback, retry, or persistence the source does not provide.
+Include a full error catalog only when the requested reference needs one.
 
-- Reader-controlled: keys, values, files, UI actions. The subject of the page.
-- Automatic: stated as behavior in the indicative, never as a knob.
-- Operator-only: build flags, host commands, self-tests. The operator's README,
-  not the user's guide.
+Read [the worked examples](references/rewrites.md) when a rewrite risks changing
+meaning or needs a complete model of the intended document.
 
-A default shown as configurable gets configured. An operator command in a user
-guide sends the reader somewhere they cannot go.
+## Update and finish
 
-## Structure
+Read the surrounding page. Preserve useful terminology, structure, and navigation.
+Correct nearby statements and examples that become false; keep other edits local.
+The finished page describes the resulting behavior without an account of the edit.
 
-1. What it is, what governs it, and when a change takes effect. One paragraph.
-2. The options side by side: a table where the file uses tables, a bulleted
-   list where it does not.
-3. One section per option: a complete example, then its rules.
-4. Constraints as rules, with the reason.
-5. What the system reports, quoted.
-6. Limits, and the delay before a change takes hold.
+Check material claims and example syntax. Run examples or focused checks when
+feasible and relevant. Do not perform destructive or external actions to validate
+prose. Report a material verification limit in the handoff.
 
-Headings name the subject: "Password logins", "Log output", "Limits". Parts 1,
-3, and 6 are the ones a reader cannot do without.
+Apply [the shared wording rules](../../rules/style.md) as a final editing pass.
+Prefer familiar, literal words, stable terms, and active voice. The conventions
+are defaults: the scope, meaning, and concision above take priority. The core
+skill still applies when the shared file is unavailable.
 
-## Extending a page that exists
+The optional `scripts/style_lint.py --profile documentation` check reports
+wording issues. Sentence length, tense, and punctuation hints require judgment.
+A clean result does not verify facts or usefulness.
 
-Most work adds a section to a file that already has conventions, and those
-outrank this skill. Read the whole file first, then copy what it does:
-
-- Heading depth, and whether sections nest at all.
-- Tables or lists. A file with no table does not get its first one here.
-- How much an example shows, and whether it carries a secret or points at a
-  variable.
-- Where limits live: one section per feature, or one list at the end.
-
-A new heading level, a first table, or a section twice its neighbors all say
-one thing: this feature outranks the page around it.
-
-## Size
-
-Length follows what the reader decides, not what the system does. Budget before
-drafting:
-
-- One example per option, and never a second that shows a variation.
-- One sentence per rule, and a reason only where the rule looks arbitrary.
-- One quoted line per failure the reader can cause. Name the rest in prose.
-- No section under three sentences. Fold a shorter one into its neighbor.
-
-Cut in this order: the second example, the reason behind an obvious rule, the
-log line nobody acts on, the sentence restating its heading.
-
-## Before you call it done
-
-Run the searches over the lines added, not over the whole file:
-
-```bash
-grep -nE '\byou\b|\byour\b'     # empty, outside a quoted error
-grep -nE '^[0-9]+\.'            # numbered only for a sequence, else bullets
-grep -nE '^- \*\*[^*]+\.\*\*'   # a table in disguise, unless the file does it
-grep -c '^|'                    # tables only where the file already has them
-grep -nE '^#+ '                 # every heading a noun
-```
-
-Then the linter, against the file as it stood. A page under edit carries
-findings that predate the work, and those hide the new one:
-
-```bash
-git show HEAD:docs/guide.md > /tmp/before.md
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py \
-    --search --baseline /tmp/before.md docs/guide.md
-```
-
-It reports nothing, and each `--search` hit inside the added lines is settled.
-What no search reaches:
-
-- Every key, default, and error string checked against the source as it stands
-  now. A value changed earlier in the session leaves stale text behind.
-- Nothing automatic shown as configurable, nothing operator-only present.
-- Every example complete, the multi-entry shape shown.
-- No instruction outside a real sequence.
-- No sentence restating the one above it, no figurative verb.
-- The headings read as a table of contents.
+Before finishing, remove every sentence that does not help complete the
+requested task. Keep necessary behavior and qualifications; stop there.

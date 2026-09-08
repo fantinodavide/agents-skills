@@ -1,0 +1,242 @@
+{
+  "date": "2026-09-08",
+  "checkpoint_commit": "d051ac6",
+  "versions": {
+    "checkpoint": {
+      "skill_sha256": "0e9972240d127bfe9f0497e7c1dc4de82d24351c9387213169276792a537a095",
+      "examples_sha256": "ba81dbb266fafee5295a4911f9a32fa3d803fbe361e4904ff43c28935843a779"
+    },
+    "candidate": {
+      "skill_sha256": "153b417fabe61eacf16d410300602220bc2e5fa9cf6715f5afa8cb8c37874ac0",
+      "examples_sha256": "46101bc1cc469a887377270795d81e9c0c5546373316eb9101b80c2aa3e18749"
+    }
+  },
+  "shared_sha256": "80529fe0d70797cbb0297de39de067b2bdf854b79c3462b78f919dbbf83b48d6",
+  "fixture_sha256": "7f534896851e4e9e69c7e9e9e32847e62801b80c80a8ea9182389baa45d560af",
+  "results": [
+    {
+      "style": "candidate",
+      "case": "defaults_and_zero",
+      "status": "success",
+      "error": false,
+      "reply": "## `refresh_seconds`\n\n`refresh_seconds` sets the interval for automatic refresh of the status panel, in seconds.\n\n| Value | Behavior |\n|---|---|\n| Omitted | Refresh automatically every 30 seconds. |\n| `0` | Disable automatic refresh. |\n| Positive integer | Refresh automatically after that many seconds have elapsed. |\n\nValidation rejects any other value with:\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\nThe check tests the JSON type, so a negative integer, a number with a decimal point, `true`, `false`, `null`, and a string all fail. The profile file itself must contain a JSON object; another top-level type fails with `profile must be an object`.\n\n### When an edit applies\n\nThe panel reads the profile file when it starts and on each reload. An edit to the file applies after a reload succeeds. If the reload cannot read or validate the file, the panel keeps the previous value, records the error message, and reports failure to the host integration.\n\nTo check a candidate file before a reload, run the `validate` command with the file path. It prints `Profile valid` and exits `0`, or prints the validation message and exits `1`. It does not change the running panel.\n\n### Examples\n\nDefault interval, written explicitly:\n\n```json\n{\"refresh_seconds\": 30}\n```\n\nAutomatic refresh disabled:\n\n```json\n{\"refresh_seconds\": 0}\n```",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.0378695,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "15393c256edeabd57d2873a4fa2846a9286875171bb1db75bfb4a7e0b722bfd7"
+    },
+    {
+      "style": "checkpoint",
+      "case": "defaults_and_zero",
+      "status": "success",
+      "error": false,
+      "reply": "## `refresh_seconds`\n\n`refresh_seconds` holds the number of seconds between automatic refreshes of the status panel. The profile file stores it as a member of a JSON object. Left out, the panel uses `30`. A refresh comes due once the elapsed time reaches the value; `0` turns automatic refresh off, and nothing ever comes due.\n\n### Values\n\n- Absent: 30 seconds.\n- A positive integer: that many seconds.\n- `0`: automatic refresh off.\n- Anything else: the profile fails validation.\n\nValidation accepts integers only. A float such as `1.5`, a string such as `\"30\"`, a boolean such as `true`, and a negative integer all fail.\n\n### Examples\n\nThe default interval, written out:\n\n```json\n{\n  \"refresh_seconds\": 30\n}\n```\n\nAutomatic refresh off:\n\n```json\n{\n  \"refresh_seconds\": 0\n}\n```\n\n### When an edit applies\n\nAn edit to the profile file takes effect at the next `reload` call from the host integration. `reload` reads and validates the file again. On success it replaces the profile in memory, clears `last_error`, and returns `True`. On a read error or an invalid value it keeps the profile already in memory, stores the message in `last_error`, and returns `False`. The panel keeps refreshing at the old interval until a `reload` succeeds.\n\n### What the panel reports\n\nAn interval that is not a non-negative integer:\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\nA profile file whose top level is not a JSON object:\n\n```\nprofile must be an object\n```\n\nThe command line accepts `validate` and a path to a profile file. It prints `Profile valid` and exits `0`, or prints one of the refusals above and exits `1`. `validate` reads the file only and changes no running panel.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.06069700000000001,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "15393c256edeabd57d2873a4fa2846a9286875171bb1db75bfb4a7e0b722bfd7"
+    },
+    {
+      "style": "candidate",
+      "case": "existing_page_update",
+      "status": "success",
+      "error": false,
+      "reply": "# Status panel\n\nThe panel reads `profile.json` at startup. The file must contain a JSON object; another top-level type fails with `profile must be an object`.\n\n## Refresh\n\n`refresh_seconds` controls automatic refresh.\n\n| Value | Behavior |\n|---|---|\n| Omitted | Refresh after 30 seconds. |\n| `0` | Disable automatic refresh. |\n| Positive integer | Refresh after that many seconds. |\n\nOther values, including negative numbers, non-integers, and `true`, fail with `refresh_seconds must be a non-negative integer`.\n\nOmitted value:\n\n```json\n{}\n```\n\nAutomatic refresh disabled:\n\n```json\n{\"refresh_seconds\": 0}\n```\n\nEditing the file does not change the running panel. The panel applies the new value on reload. A reload that fails keeps the current profile and records the error for display.\n\n## Validation\n\n`validate PATH` checks a profile without changing the running panel. It prints `Profile valid` and exits with status 0, or prints the error message and exits with status 1.\n\n## Support\n\nSend the displayed error to the operator.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.036236500000000005,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "2c9ecedc826538946df73fa94f6df31746094b19e1fdb09a0406247e9eae19aa"
+    },
+    {
+      "style": "checkpoint",
+      "case": "existing_page_update",
+      "status": "success",
+      "error": false,
+      "reply": "# Status panel\n\nThe panel reads the profile file at startup. The file holds a JSON object, and `refresh_seconds` is its only recognized key.\n\n## Refresh\n\n`refresh_seconds` sets the interval between automatic refreshes, in seconds. It must be a non-negative integer; a float, a boolean, or a negative number is rejected. An omitted value leaves the interval at 30 seconds. A value of `0` disables automatic refresh, and the panel then refreshes only on demand. A refresh comes due once the elapsed time reaches the interval.\n\nOmitted, so the panel refreshes every 30 seconds:\n\n```json\n{}\n```\n\nAutomatic refresh disabled:\n\n```json\n{\n  \"refresh_seconds\": 0\n}\n```\n\n## Reload\n\nThe running panel keeps the profile it loaded until a reload. A reload re-reads the file and takes the new interval. A reload that fails leaves the previous interval in place and records the error for display.\n\n## Validation\n\nThe command checks a file without starting the panel:\n\n```bash\npython panel.py validate profile.json\n```\n\nA valid file prints `Profile valid` and exits with status 0. A failure prints one of these lines and exits with status 1:\n\n```\nprofile must be an object\nrefresh_seconds must be a non-negative integer\n```\n\nA missing or unreadable file prints the operating system error instead.\n\n## Support\n\nSend the displayed error to the operator.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.038639,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "2c9ecedc826538946df73fa94f6df31746094b19e1fdb09a0406247e9eae19aa"
+    },
+    {
+      "style": "candidate",
+      "case": "failed_reload",
+      "status": "success",
+      "error": false,
+      "reply": "## Rejected profile reload\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\n`reload` returns `False` and stores this message in `last_error` when the\nprofile file sets `refresh_seconds` to `-1`. The panel keeps the profile loaded\nbefore the reload, so automatic refresh continues at 15 seconds. The reload\nnever writes to the profile file, and the file keeps the rejected value.\n\n`refresh_seconds` accepts a non-negative integer; `0` disables automatic\nrefresh. To recover:\n\n1. Set `refresh_seconds` to a non-negative integer in the profile file.\n2. Run `python panel.py validate PATH` and confirm that it prints `Profile valid`.\n3. Call `reload` again. On success it returns `True`, applies the new interval,\n   and clears `last_error`.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.0250665,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "0bea7954564fea8a69f7dbb1a648d29a4537673456390385bce16b85416c5743"
+    },
+    {
+      "style": "checkpoint",
+      "case": "failed_reload",
+      "status": "success",
+      "error": false,
+      "reply": "## Failed reload\n\n`reload` calls `read_profile`, and a rejected profile leaves the running panel unchanged. With `refresh_seconds` at `-1`, the validator raises before the new values reach the panel:\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\nThe same message reaches `last_error` as a string, `reload` returns `False`, and the panel keeps the profile from the previous successful load.\n\n### Panel state after the failure\n\nThe panel continues with `refresh_seconds` at `15`, the value from the last profile it accepted. `automatic_refresh_enabled` stays `True`, and `refresh_due` reports `True` once 15 seconds pass. `last_error` holds the message until a later `reload` succeeds and clears it.\n\n### The profile file\n\n`reload` reads the file and never writes it. The value `-1` stays on disk, so every later `reload` fails with the same message until the file changes. A restart constructs the panel through `read_profile`, which raises the same `ValueError` and stops the panel from starting.\n\n### Recovery\n\n1. Set `refresh_seconds` in the profile to `0` or a positive integer. `0` turns automatic refresh off and makes `refresh_due` return `False` at any elapsed time.\n2. Check the file with the `validate` command, which prints `Profile valid` and exits `0` on success, or prints the message and exits `1`.\n3. Call `reload` again. It returns `True`, applies the new interval, and sets `last_error` to `None`.\n\n### Other rejections\n\n`read_profile` also rejects a profile whose top level is not an object, with `profile must be an object`, and a `refresh_seconds` of any type other than `int`, including `true` and `1.0`. Malformed JSON and an unreadable path fail through the same path, with the message from the decoder or the operating system.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.051463999999999996,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "0bea7954564fea8a69f7dbb1a648d29a4537673456390385bce16b85416c5743"
+    },
+    {
+      "style": "candidate",
+      "case": "heldout_predicate_api",
+      "status": "success",
+      "error": false,
+      "reply": "## `refresh_due(elapsed_seconds)`\n\nReturns `True` when automatic refresh is enabled and `elapsed_seconds` is greater than or equal to `refresh_seconds` in the loaded profile. Automatic refresh is enabled when `refresh_seconds` is not `0`; a profile that omits the value uses `30`.\n\n| Profile value | `elapsed_seconds` | Result |\n|---|---|---|\n| `0` | Any | `False` |\n| Positive integer | Less than the value | `False` |\n| Positive integer | Equal to or greater than the value | `True` |\n\nThe method reports the condition only. It does not refresh data, and it does not reset the elapsed time. The caller measures `elapsed_seconds`, performs the refresh, and resets its own timer.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.0234075,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "c85b2c9c1e5efe28d738ab633e9026ee7a30f711344f52a0fa27f5275f5545df"
+    },
+    {
+      "style": "checkpoint",
+      "case": "heldout_predicate_api",
+      "status": "success",
+      "error": false,
+      "reply": "## `refresh_due(elapsed_seconds)`\n\nReturns `True` when `refresh_seconds` is not `0` and `elapsed_seconds` is greater than or equal to `refresh_seconds`; returns `False` otherwise. `elapsed_seconds` is the time since the last refresh, measured by the caller.\n\nThe method reads `self.profile[\"refresh_seconds\"]` and returns. It fetches no data, changes no attribute, and keeps no clock, so the caller performs the refresh and resets its own elapsed time. Repeated calls with the same argument return the same value.\n\nA profile with `refresh_seconds` set to `0` disables automatic refresh, and `refresh_due` then returns `False` for every value of `elapsed_seconds`.\n\n`reload()` replaces the profile and changes the threshold for later calls.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.021730000000000003,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "c85b2c9c1e5efe28d738ab633e9026ee7a30f711344f52a0fa27f5275f5545df"
+    },
+    {
+      "style": "candidate",
+      "case": "heldout_startup_failure",
+      "status": "success",
+      "error": false,
+      "reply": "## Startup failure on a negative refresh interval\n\nConstruction of `StatusPanel` raises `ValueError: refresh_seconds must be a non-negative integer` because the profile sets `refresh_seconds` to `-1`. The validation runs before the instance exists, so no panel is created and `reload` is not available to correct the profile. Set `refresh_seconds` to `0` to disable automatic refresh or to a positive integer for the interval in seconds, then construct `StatusPanel` again. Running `validate PATH` on the profile reports the same message and exits with status 1 until the value is corrected, and prints `Profile valid` afterward.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.024543499999999996,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "70bf03586cbefefa174da2e366a2a938cdfc677d563fbe91c50c425946d94fa9"
+    },
+    {
+      "style": "checkpoint",
+      "case": "heldout_startup_failure",
+      "status": "success",
+      "error": false,
+      "reply": "## Startup failure on a negative `refresh_seconds`\n\n`StatusPanel.__init__` calls `read_profile` before it sets any attribute, and `read_profile` rejects a `refresh_seconds` of `-1`, so construction raises and no panel instance exists:\n\n```\nValueError: refresh_seconds must be a non-negative integer\n```\n\nThe profile must set `refresh_seconds` to an integer of `0` or more; `0` leaves `automatic_refresh_enabled` false and stops `refresh_due` from ever returning true, and any positive integer is the interval in seconds. A float such as `30.0` fails the same check, because `read_profile` compares the type against `int` exactly. `python panel.py validate PATH` runs the same check and prints `Profile valid` once the value is corrected.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.023521,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "70bf03586cbefefa174da2e366a2a938cdfc677d563fbe91c50c425946d94fa9"
+    },
+    {
+      "style": "candidate",
+      "case": "panel_audience",
+      "status": "success",
+      "error": false,
+      "reply": "## Reload profile\n\n**Reload profile** reads the profile file again and applies it to the panel.\n\nIf the file is unreadable or invalid, the panel keeps the profile it already\nuses and displays the error message, for example:\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\n```\nprofile must be an object\n```\n\nAn error means no change took effect. Only an operator can correct the profile\nfile. After the correction, **Reload profile** applies the corrected file.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.0234395,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "084baf322f99cfd591ccb2ffaa9caac10524c506e9d6a0c9dc8604da9814f0f9"
+    },
+    {
+      "style": "checkpoint",
+      "case": "panel_audience",
+      "status": "success",
+      "error": false,
+      "reply": "## Reload profile\n\nThe button re-reads the profile file and applies `refresh_seconds`, the number of seconds between automatic refreshes. The default is 30 seconds, and 0 leaves automatic refresh off until the next reload changes it. A reload that succeeds clears any earlier failure message.\n\n## Validation failure\n\nA reload fails when the file is unreadable or holds a value the panel refuses. The panel keeps the profile from the last successful reload, so refresh behavior does not change, and it displays the reason:\n\n```\nprofile must be an object\n```\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\nThe first message means the file holds something other than a JSON object. The second means `refresh_seconds` is present but is not a whole number of zero or more; a decimal or a negative number is refused. A file that cannot be read reports the message from the operating system instead.\n\n## Limits\n\nThe profile file is operator-controlled, and the panel offers no way to edit it. A failure message stands until an operator corrects the file and a later reload succeeds.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.037537,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "084baf322f99cfd591ccb2ffaa9caac10524c506e9d6a0c9dc8604da9814f0f9"
+    },
+    {
+      "style": "candidate",
+      "case": "recommendation_not_enforcement",
+      "status": "success",
+      "error": false,
+      "reply": "Deployment guidance recommends keeping profiles in `config/` to organize them. The loader accepts any readable file path, including one under `uploads/`; it does not enforce a directory. A profile is rejected only when the file is unreadable, when its JSON is not an object (`profile must be an object`), or when `refresh_seconds` is not a non-negative integer (`refresh_seconds must be a non-negative integer`).",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.079586,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "73073b5fe1b55b6d90491648b4849a97507c1855b941883f650891eebfa5b4d2"
+    },
+    {
+      "style": "checkpoint",
+      "case": "recommendation_not_enforcement",
+      "status": "success",
+      "error": false,
+      "reply": "## Profiles\n\n`read_profile` opens the path it receives and applies no directory rule, so a profile loads from any readable path, `uploads/` included. The existing sentence \"The loader rejects profiles stored in uploads/\" contradicts the implementation and needs to go. Deployment guidance recommends `config/` for organization, and nothing in the code enforces it.\n\nThe loader accepts a JSON object with one recognized key. `refresh_seconds` defaults to `30`, must be a non-negative integer, and set to `0` it turns automatic refresh off. The loader returns `refresh_seconds` alone, so any other key in the file has no effect.\n\nA top-level value that is not an object, a non-integer interval, or a negative interval fails with one of:\n\n```\nprofile must be an object\nrefresh_seconds must be a non-negative integer\n```\n\n`validate` prints the message and exits `1`; a profile that passes prints `Profile valid` and exits `0`. `StatusPanel.reload` keeps the profile already in use, stores the message in `last_error`, and returns `False`.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.094586,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "73073b5fe1b55b6d90491648b4849a97507c1855b941883f650891eebfa5b4d2"
+    },
+    {
+      "style": "candidate",
+      "case": "validation_procedure",
+      "status": "success",
+      "error": false,
+      "reply": "## Validate candidate.json\n\nThe command reads the file and reports whether it is a usable profile.\n\n1. Run `python3 panel_fixture.py validate candidate.json`.\n2. Confirm the output.\n\nSuccess prints:\n\n```\nProfile valid\n```\n\nand the command exits with status `0`.\n\nA rejected profile prints one message and exits with status `1`:\n\n```\nprofile must be an object\n```\n\n```\nrefresh_seconds must be a non-negative integer\n```\n\nA file that cannot be read or parsed prints the underlying error text instead, such as a missing-file message from the operating system or a JSON decoder message.\n\nThe first message means the top-level JSON value is not an object. The second means `refresh_seconds` is present with a value other than a non-negative integer; the accepted forms are `0` and positive integers, and an absent key takes the default of 30.\n\n`validate` opens the file for reading only. It does not modify `candidate.json` and does not load, reload, or otherwise change a running panel process.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.028659500000000004,
+      "system_prompt_sha256": "93804b4b5fd748ff1dc4fd98af4303ab9f1ab5943493f40df6c08b9541638fcc",
+      "user_prompt_sha256": "bb77e056e9c3b67449fcd151bb468ef970ea8c54b9e298eca290c360d198b82d"
+    },
+    {
+      "style": "checkpoint",
+      "case": "validation_procedure",
+      "status": "success",
+      "error": false,
+      "reply": "## Profile validation\n\n`panel_fixture.py` accepts one command, `validate`, and one path. The command parses the profile, applies the same rules the panel applies at load, and reports the result on standard output. It opens the file for reading only.\n\n### Procedure\n\n1. Change to the directory that holds `panel_fixture.py` and `candidate.json`.\n2. Run the command:\n\n   ```bash\n   python3 panel_fixture.py validate candidate.json\n   ```\n\n3. Read the printed line, then the exit status with `echo $?`.\n\n### Result\n\nA valid profile prints one line and exits 0:\n\n```\nProfile valid\n```\n\nA rejected profile prints the cause and exits 1:\n\n| Cause | Message |\n|---|---|\n| Top-level value is not a JSON object | `profile must be an object` |\n| `refresh_seconds` is not an integer, or is negative | `refresh_seconds must be a non-negative integer` |\n| Text is not valid JSON | The decoder message, for example `Expecting value: line 1 column 1 (char 0)` |\n| File missing or unreadable | The operating system message, for example `[Errno 2] No such file or directory: 'candidate.json'` |\n\n### Rules applied\n\n`refresh_seconds` is the only key read; any other key passes validation and is discarded. Absent, it defaults to `30`. The value `0` is valid and disables automatic refresh. The type check accepts `int` alone, so `true`, `30.0`, and `\"30\"` all draw the `refresh_seconds must be a non-negative integer` message.\n\n### Effect on the file and a running panel\n\nValidation does not write to `candidate.json` and creates no other file. It does not signal, restart, or reconfigure a running panel: a panel adopts a changed profile only through its own reload, which keeps the previous profile when the new one fails. Applying the profile is a separate step, outside this procedure.",
+      "models": [
+        "claude-haiku-4-5-20251001",
+        "claude-opus-5[1m]"
+      ],
+      "cost_usd": 0.060392,
+      "system_prompt_sha256": "19cdb62f790a21ab6b3b5f147d3f5f05676b67683377a91b2a8e0984bac7b960",
+      "user_prompt_sha256": "bb77e056e9c3b67449fcd151bb468ef970ea8c54b9e298eca290c360d198b82d"
+    }
+  ]
+}

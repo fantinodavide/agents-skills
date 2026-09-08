@@ -1,99 +1,118 @@
-# Before and after
+# Worked documentation examples
 
-Pairs taken from real documentation passes. The left column is not wrong
-English; it is the wrong stance for a technical document.
+Each example uses the hypothetical source facts stated with it.
+These are illustrations, not claims about this repository or commands for it.
+The document follows those facts; a rewrite must not add implementation behavior.
 
-## Procedure that isn't a procedure
+## Recommendation and enforcement
 
-> Upload `config.json` to the server root over SFTP and restart the server.
-> Settings apply at start.
+Source facts: the loader accepts any readable JSON file path. No caller
+restricts its directory. Deployment guidance recommends a separate
+configuration directory to keep configuration apart from uploaded files.
 
-> The server writes `config.json` at first start and reads it again at every
-> start, so a change takes effect at the next restart.
+A draft says: "The loader rejects configuration files in the upload directory."
 
-The first tells someone how the writer got the file there. The second tells
-every reader when their change lands, whether they used SFTP, the panel, or a
-deploy script.
+The supported description is:
 
-## A setting explained by its consequence
+> Deployment guidance recommends a separate configuration directory so
+> configuration and uploaded files stay apart. The loader accepts any readable
+> JSON file path; it does not enforce that directory choice.
 
-> Set `cookie_secret` to a random string. Without it, sessions are signed with a
-> fresh key at every start.
+If a later implementation rejects that location, the document can describe
+the rejection after the check and its error are verified.
+A recommendation alone cannot support that claim.
 
-> `cookie_secret` holds the key that signs sessions. Left out, each start
-> invents a new one, and everyone signed in at the time signs out.
+## Defaults and meaningful variations
 
-Name what the setting is, then what follows from leaving it out. The reader
-decides whether that consequence matters to them.
+Source facts: `retention_days` defaults to 14 when absent. A value of 0 disables
+automatic deletion. Positive integers set the retention period in days.
+Negative values fail validation. The worker reads this setting at startup.
 
-## A prohibition rewritten as behavior
+A complete reference section is:
 
-> Don't put the login config in the data directory.
+> ## File retention
+>
+> `retention_days` controls automatic deletion.
+>
+> | Value | Behavior |
+> |---|---|
+> | Omitted | Delete files after 14 days. |
+> | `0` | Keep files without automatic deletion. |
+> | Positive integer | Delete files after that many days. |
+>
+> Negative values fail validation. The worker reads the setting at startup,
+> so a change takes effect after a restart.
 
-> The server refuses a config it finds in the data directory, because the reader
-> can write there and could edit its own login away.
+Both supported forms can deserve an example when the audience needs the syntax:
 
-A prohibition invites the question "or what". Behavior plus reason answers it in
-the same sentence.
+```json
+{"retention_days": 14}
+```
 
-## An automatic decision that was leaking as a knob
+```json
+{"retention_days": 0}
+```
 
-> The panel's port closes. Set `bind` to `0.0.0.0` to keep it open as well.
+The second example distinguishes disabled deletion from the default period.
+The source facts do not establish cleanup frequency or a particular error
+string, so neither belongs in the section.
 
-> The panel's port closes, because the tunnel is already a way in and leaving
-> both open would publish the map twice over.
+## Failure and preserved state
 
-The first sentence hands the reader an override for a decision the system made
-deliberately. Document the decision. Leave the escape hatch to the operator
-reference, if it belongs anywhere.
+Source facts: a reload reads and validates a candidate routing file before
+replacing active routes. Validation failure leaves the active routes unchanged
+and returns `routes must be a list`. The reload action remains available.
 
-## An operator command in a user guide
+A troubleshooting section is:
 
-> Check a config before restarting:
-> ```bash
-> docker run --rm -e SELFTEST=1 -v /path/to/config.json:/app/config.json:ro image:latest
-> ```
+> ## Rejected route reload
+>
+> `routes must be a list` means the candidate file contains a `routes` value
+> with the wrong type. The reload leaves the active routes unchanged.
+>
+> The `routes` value needs a JSON list. After the file is corrected, the reload
+> action reads and validates it again before replacing the active routes.
 
-> (removed from the user guide; kept in the operator README)
+The description distinguishes rejection of the new input from loss of the
+working configuration. It makes no promise about behavior after a restart,
+because that behavior is outside the supplied facts.
 
-Someone reading the panel documentation has no Docker daemon and no image. The
-block is accurate and useless to them.
+## Audience and automatic behavior
 
-## An example that hid the shape
+Source facts: the panel has a relay switch. Enabling it closes the direct
+listener, and the panel has no override for that behavior. Operators also have
+a host diagnostic command. Panel users have no access to host commands.
 
-> ```json
-> { "users": { "admin": "a-long-password" } }
-> ```
+The panel guide can say:
 
-> ```json
-> {
->   "users": {
->     "admin": "a-long-password",
->     "coach": "env:COACH_PASSWORD",
->     "analyst": "another-long-password"
->   }
-> }
-> ```
+> Enabling the relay closes the direct listener. The panel provides no control
+> for keeping both connections active.
 
-One entry reads as a scalar with decoration. Three entries show that the field
-is a map, that values resolve individually, and that names are free-form. This
-is the difference that made a reader ask whether the field took a list.
+The host diagnostic command belongs in the operator documentation.
+The source facts do not explain why both connections cannot remain active,
+so the guide must not invent a security or performance rationale.
 
-## A heading that ordered the reader around
+## Procedure with a verifiable outcome
 
-> ## Fix a rejected config
+Source facts: a hypothetical tool named `profilectl` is installed on the host.
+Its `check PATH` command validates a candidate without changing the active
+profile. Its `apply PATH` command validates again, replaces the active profile,
+and prints `Profile applied`. An invalid candidate leaves the active profile
+unchanged. This section is for an operator.
 
-> ## What the server reports
+A procedure can say:
 
-The section describes where output goes and what refusals look like. Naming it
-after a repair implies the reader arrived broken.
+> ## Profile replacement
+>
+> The candidate profile is a local JSON file. `profilectl` must be installed
+> on the host.
+>
+> 1. Run `profilectl check candidate.json`.
+> 2. Run `profilectl apply candidate.json` after validation succeeds.
+> 3. Confirm that the command prints `Profile applied`.
+>
+> An invalid candidate leaves the active profile unchanged.
 
-## Vague attribution replaced by the source
-
-> The system may reject some provider names.
-
-> `provider` accepts any name oauth2-proxy accepts, among them `google`,
-> `github`, `gitlab`, `entra-id`, `oidc`, and `keycloak-oidc`. The two OIDC
-> names also want `oidc_issuer_url`.
-
-"May" is what a writer says when they haven't read the parser.
+The commands belong because the document describes an ordered operator task.
+The confirmation comes from the supplied command behavior. A short section
+needs no additional sentences to satisfy a minimum length.

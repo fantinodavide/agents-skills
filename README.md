@@ -6,14 +6,16 @@ reads markdown instructions can use the same files.
 
 | Skill | What it covers |
 |---|---|
-| [`technical-docs`](skills/technical-docs/SKILL.md) | Technical documentation for a system you built: config files, panel features, CLIs, APIs. Voice, scope, structure, and the checks that keep claims true. The system is the subject of every sentence. |
+| [`technical-docs`](skills/technical-docs/SKILL.md) | Concise documentation based on verified behavior, without storytelling. Includes the facts needed for the reader's task. The system is the subject of explanatory prose. |
 | [`todo-list`](skills/todo-list/SKILL.md) | An ordered todo list of the actions a person performs to reach an end state. One numbered line per action, verb first, with every path and value the action needs. |
 | [`clear-output-style`](skills/clear-output-style/SKILL.md) | The voice an agent uses when it talks to a person: chat replies, progress reports, plans, review notes. Connected explanations, relevant detail, and natural wording. Doubles as a Claude Code output style. |
 
 `technical-docs` and `todo-list` share [`rules/style.md`](rules/style.md):
 Strunk's composition principles, the Google developer documentation style
 guide, and ASD-STE100 merged into one. Each skill sets its mood, person, and
-structure. `clear-output-style` is self-contained, with conversational rules
+structure. `technical-docs` treats shared wording conventions as a final editing
+pass; its guidance on scope, meaning, and concision takes priority.
+`clear-output-style` is self-contained, with conversational rules
 and complete examples. It prioritizes understanding and useful completeness
 over sentence length and formatting conventions.
 
@@ -28,9 +30,9 @@ together:
 ```
 
 An install tracks the repo, so a `/plugin update` brings later changes.
-`technical-docs` and `todo-list` name the shared files through
-`${CLAUDE_PLUGIN_ROOT}`, which a plugin install sets to the installed copy of
-this repo.
+`technical-docs` links to shared files relative to its skill directory.
+`todo-list` names them through `${CLAUDE_PLUGIN_ROOT}`, which a plugin install
+sets to the installed copy of this repo.
 
 ## Loose skills
 
@@ -52,8 +54,9 @@ foreach ($skill in 'technical-docs', 'todo-list', 'clear-output-style') {
 ```
 
 Copying the directory works too, at the cost of drift. Outside a plugin
-install `${CLAUDE_PLUGIN_ROOT}` is unset, so `technical-docs` and `todo-list`
-find `rules/style.md` only when the agent resolves that path to this checkout.
+install `${CLAUDE_PLUGIN_ROOT}` is unset, so `todo-list` finds `rules/style.md`
+only when the agent resolves that path to this checkout. A loose copy of
+`technical-docs` also needs access to that shared file for its optional wording pass.
 `clear-output-style` contains its own rules and needs no shared-rule path.
 
 ## Output styles
@@ -81,8 +84,10 @@ ln -s "$PWD/skills/clear-output-style/SKILL.md" ~/.claude/output-styles/clear-ou
 
 ## Rule ownership
 
-`rules/style.md` holds the shared documentation rules. `technical-docs` and
-`todo-list` read that file when they load. Conversational changes belong in
+`rules/style.md` holds the shared wording conventions. `technical-docs` applies
+them after checking meaning, and `todo-list` follows them when it loads.
+Technical-document structure and examples belong in `skills/technical-docs/`.
+Conversational changes belong in
 `skills/clear-output-style/SKILL.md`, including its complete response examples.
 
 The conversational skill has no synced documentation sections. The
@@ -93,12 +98,14 @@ from its source. Files without markers remain unchanged.
 ## Draft checks
 
 `scripts/style_lint.py` checks mechanical wording conventions. The default
-`strict` profile follows the documentation rules. The `conversation` profile
-permits perfect tense and treats sentence length, timing words, and repeated
-em dashes as review hints:
+`strict` profile enforces the shared mechanical rules. The `documentation`
+profile treats sentence length, perfect tense, timing words, and repeated
+em dashes as review hints. The `conversation` profile permits perfect tense
+and treats the other three as review hints:
 
 ```bash
 python3 scripts/style_lint.py --profile conversation skills/clear-output-style/SKILL.md
+python3 scripts/style_lint.py --profile documentation skills/technical-docs/SKILL.md
 cat reply.md | python3 scripts/style_lint.py --profile conversation -
 git show HEAD:docs/guide.md > /tmp/before.md
 python3 scripts/style_lint.py --baseline /tmp/before.md docs/guide.md
@@ -108,7 +115,7 @@ The script needs Python 3 and nothing else. It reports the filler words, part of
 the signal-free vocabulary, `e.g.` and `i.e.`, `currently`, the perfect tense,
 and British spelling. It also reports `here`, `this`, or `link` as link text, a
 second em dash in a paragraph, and a sentence past 25 words. In the
-`conversation` profile, review hints print with `review:` and do not cause a
+`conversation` and `documentation` profiles, review hints print with `review:` and do not cause a
 failed check. Other findings still produce exit status 1. An unknown profile
 produces an error.
 
@@ -120,8 +127,8 @@ A sentence wrapped across lines counts as one sentence. `--search` adds the pass
 gerund check, which report hits for a reader to settle rather than errors. The
 style allows a passive where the actor is unknown, and the pattern cannot tell a
 trailing gerund from a noun. The assertions run with `--selftest`. The
-`style-lint` workflow runs the self-tests, the sync check, and the linter on
-every push to `main` and on every pull request.
+`style-lint` workflow runs self-tests, sync validation, fixture checks, and
+lint checks on pushes to `main` and pull requests.
 
 The script reads prose. It skips fenced code, inline code, and YAML frontmatter.
 A line containing `<!-- style-lint: ignore -->` is skipped, and a
@@ -140,10 +147,10 @@ the response against its request and evidence:
 - Are claims supported and meaningful limits clear?
 - Does the reply stop when complete, with a next action only if needed?
 
-The [conversational evaluation](evaluations/clear-output-style/REVIEW.md)
-records a comparison with the previous checkpoint, the supplied cases, and
-the remaining behavioral limits. These evaluation files stay outside the skill
-so they do not become examples in the model's prompt.
+The [conversational evaluation](evaluations/clear-output-style/REVIEW.md) and
+[documentation evaluation](evaluations/technical-docs/REVIEW.md) compare revised
+skills with their previous checkpoints and record remaining limits.
+Evaluation files stay outside the skills so they do not become prompt examples.
 
 ## Layout
 
