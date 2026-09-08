@@ -1,5 +1,8 @@
 # Technical documentation evaluation
 
+This report covers v0.6.0, available at commit `69c9e7d`.
+Later skill revisions are outside this comparison.
+
 The revision produces shorter documentation in seven of eight cases, with no
 storytelling. Some replies still add unnecessary detail or unsupported claims.
 Generation success does not establish documentation correctness.

@@ -4,6 +4,28 @@ Each example uses the hypothetical source facts stated with it.
 These are illustrations, not claims about this repository or commands for it.
 The document follows those facts; a rewrite must not add implementation behavior.
 
+## Preserve a useful layout
+
+Source facts: an export guide describes the format, location, and retention.
+The retention period changes to seven days. The format and location remain
+accurate. The implementation also logs checksums, file sizes, and deletion
+timing; none changes how this guide's reader retrieves an export.
+
+Before:
+
+> - **Format:** CSV with one row per event.
+> - **Location:** The project's Downloads tab.
+> - **Retention:** Exports remain available for 14 days.
+
+After:
+
+> - **Format:** CSV with one row per event.
+> - **Location:** The project's Downloads tab.
+> - **Retention:** Exports remain available for seven days.
+
+The correction preserves the bold labels and unchanged reference facts.
+The implementation details do not need new paragraphs or a log block.
+
 ## Recommendation and enforcement
 
 Source facts: the loader accepts any readable JSON file path. No caller

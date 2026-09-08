@@ -76,7 +76,8 @@ closing recap. A text ends when the last fact ends.
   subject, the last carries the consequence.
 - Three or more items go in a list: numbered for a sequence, bulleted for a set.
 - Items start with the same part of speech.
-- `**Label:** sentence` bullets are a table in disguise.
+- Bold lead-ins help readers find items in a list. Use a table when readers
+  need to compare repeated attributes.
 - Headings name the subject and stop: "Failure behavior", "Limits". Not
   "Getting started", not "What happens when it crashes", not a verb phrase.
 - Sentence case for headings and items.
@@ -96,7 +97,8 @@ long it survives. Flat voice: no "Uh oh", no apology.
 
 ## Mechanics
 
-- Bold for a label or the opening phrase of a callout only.
+- Preserve useful bold labels and emphasis. Add bold where it helps readers
+  find a term, control, or consequential condition; avoid whole bold paragraphs.
 - One em dash per paragraph at most.
 - No emoji in headings.
 - No rule of three, no "not only X but also Y", no "from X to Y" ranges.

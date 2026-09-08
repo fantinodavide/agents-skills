@@ -5,9 +5,9 @@ description: Write or update concise technical documentation from verified behav
 
 # Technical documentation
 
-Write the shortest complete documentation for the requested task. State the
-behavior directly, with the facts needed to use it correctly. Include a reason
-or consequence only when it changes a choice or prevents a likely mistake.
+Write concise documentation with clear labels and the facts needed for the
+requested task. State the behavior directly. Reduce unnecessary reading while
+preserving useful layout and qualifications.
 
 Keep technical docs very concise. Omit storytelling, analogies, rhetorical
 questions, author commentary, and implementation history. A small setting or
@@ -26,8 +26,10 @@ commands; a panel user can need only panel actions.
 A paragraph replacement returns a paragraph. A short help section explains
 the control, its result, and any failure the reader must handle. Source files
 verify those claims; they do not define the document's table of contents.
-Leave helper names, validation commands, error catalogs, and adjacent features
-out unless the requested task needs them.
+Include a newly discovered detail only if it changes the reader's action,
+choice, or interpretation. State relevant restrictions briefly. Leave internal
+rationales, diagnostic transcripts, and adjacent features out of a general guide
+unless needed for its task.
 
 For example, given a button that pauses scheduled imports, lets the current
 import finish, and requires an administrator to resume, this is complete:
@@ -73,9 +75,11 @@ state. These are possible details, not a checklist to fill in every section.
 | Troubleshooting | The symptom, its supported cause, the state left behind, and the correction. |
 
 Use a paragraph for one point, a table for comparable values, and numbered
-steps for a sequence. Add headings only when they help navigation. State each
-fact once: a table needs no prose that repeats its rows, and a complete section
-needs no recap. Do not pad sections to a sentence count.
+steps for a sequence. Preserve useful bold lead-ins and emphasis when editing.
+Short bold labels can make a list easier to scan; they do not require a table.
+Add headings only when they help navigation. State each fact once: a table
+needs no prose that repeats its rows, and a complete section needs no recap.
+Do not pad sections to a sentence count.
 
 Use the system, setting, file, or operation as the subject of explanatory prose.
 Use present tense for behavior, without `you` or `your`. Numbered procedures
@@ -97,6 +101,8 @@ the environment is unspecified.
 
 Copy relevant errors exactly. Describe the failure state and supported recovery
 without implying rollback, retry, or persistence the source does not provide.
+Quote a log line when the reader needs to recognize or diagnose that message.
+A general guide can state the failure and correction without showing the log.
 Include a full error catalog only when the requested reference needs one.
 
 Read [the worked examples](references/rewrites.md) when a rewrite risks changing
@@ -104,9 +110,12 @@ meaning or needs a complete model of the intended document.
 
 ## Update and finish
 
-Read the surrounding page. Preserve useful terminology, structure, and navigation.
-Correct nearby statements and examples that become false; keep other edits local.
-The finished page describes the resulting behavior without an account of the edit.
+Read the surrounding page. Separate factual corrections from wording changes.
+Correct outdated claims in place; preserve useful terminology, formatting,
+structure, and navigation. Keep accurate defaults and option descriptions unless
+the requested scope excludes them. Newly discovered implementation details do
+not replace existing reference information. The finished page describes the
+resulting behavior without an account of the edit.
 
 Check material claims and example syntax. Run examples or focused checks when
 feasible and relevant. Do not perform destructive or external actions to validate
@@ -121,5 +130,6 @@ The optional `scripts/style_lint.py --profile documentation` check reports
 wording issues. Sentence length, tense, and punctuation hints require judgment.
 A clean result does not verify facts or usefulness.
 
-Before finishing, remove every sentence that does not help complete the
-requested task. Keep necessary behavior and qualifications; stop there.
+Before finishing, check what the edit makes easier to find, understand, or do.
+Remove unnecessary reading without removing useful emphasis or reference facts.
+Keep necessary behavior and qualifications; stop there.
