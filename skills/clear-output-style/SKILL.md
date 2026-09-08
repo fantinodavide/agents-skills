@@ -38,7 +38,7 @@ addressed to the user.
 ## The answer goes first
 
 The first line carries the answer, the command, the path, or the verdict.
-Context follows only where the answer is unusable without it.
+Context follows where it helps the reader understand, decide, or act.
 
 <!-- style-lint: ignore-block -->
 | Instead of | Write |
@@ -50,23 +50,39 @@ Context follows only where the answer is unusable without it.
 Delete any first sentence that says what you are about to do: "Great
 question", "Let me", "I'll start by", "Sure!", "Looking at your".
 
-## One thing per reply
+## Choose the length and detail
 
-A reply carries the answer to what they asked, or the one action that comes
-next.
+Use the shortest answer that gives the user enough context to understand,
+decide, or act. Match the response to what the user needs from this turn.
 
-- A second finding takes one line at the end, or its own message later.
+- Give the answer first. Add enough explanation for the user to
+  understand why it applies.
+- Include details that change the conclusion, explain a meaningful
+  choice, or affect the user's next action.
+- Scale depth with complexity, uncertainty, and consequences.
+  A simple question may need one sentence. A difficult decision
+  may need several paragraphs.
+- Remove repetition, background the user already knows, and
+  implementation details that do not help them assess the result.
+- Stop when the request is answered. Include a next action only
+  when something remains to do.
+
+Treat sentence counts, line counts, and list limits as defaults.
+Do not omit a necessary fact to satisfy them.
+
+## Keep the reply focused
+
+- Include findings that affect the answer or the user's next action.
 - A question to the reader stands alone: the options, one line each, no
   rationale ahead of it. Two decisions are two questions.
-- How the code works is not part of a report. The diff carries it.
-- A decision you made gets the decision and its effect. Its defense waits for a
-  challenge.
+- Explain how the code works when that helps the reader assess the result.
+- Explain a decision briefly when the reason helps the user assess it.
 - A reply that fits on one screen has no headings.
 
 ## Structure carries the answer
 
 - One bounded action per step, and the fewest steps that still work.
-- Five items at most. Past five, split into what to do now and what can wait.
+- Aim for five items at most. Group longer lists where that helps the reader.
 - Where the harness has a task or plan tool, multi-step work goes in it, and
   the prose does not repeat the plan.
 - A request for the steps alone is a todo list and has its own skill.
@@ -199,16 +215,15 @@ this, an afternoon if not", never "some work".
 Work in progress says where it stands and what comes next: `Step 3 of 5 done:
 schema updated. Next: backfill the new column.`
 
-A finished report has three parts and stops:
+A finished report gives the result and the details needed to assess it:
 
 1. The result, in terms the reader can check: "Run `npm run dev` and open
    `/login`."
 2. Any change the reader has to know before they act, one sentence each.
-3. The next action, one, under two minutes, or the one question.
+3. A concrete next action or question, only when something remains to do.
 
-Ten lines cover a report; past that is a walkthrough, and a walkthrough waits
-for the request. A second issue waits until the first is done, then gets one
-line. Where you can finish four of five steps, finish the four and hand over
+Keep routine reports short. Add detail when complexity, uncertainty, or
+consequences require it. Where you can finish four of five steps, finish the four and hand over
 the one that is theirs. An action you name is one the reader can run: "run the
 backfill script" is a label, `scripts/backfill.py` is an action.
 
@@ -258,8 +273,8 @@ backfill script" is a label, `scripts/backfill.py` is an action.
 1. Delete the first sentence if it announces what you are about to do, and the
    last if it recaps or asks "anything else?".
 2. Run the pass below, or `${CLAUDE_PLUGIN_ROOT}/scripts/style_lint.py --search`.
-3. Read the first line and the last line alone. They carry the answer and what
-   comes next, or the reply is not finished.
+3. Check that the first line answers the request and the last adds necessary
+   information. Name what comes next only when something remains to do.
 
 <!-- rules: style.md#the-pass-over-a-finished-draft -->
 ## The pass over a finished draft
